@@ -1,10 +1,13 @@
 Container mainContainer;
-Flappy flappy;
 Image backgroundImage;
-Repeater repeater;
+
+TitleScreen titleScreen;
+GameScreen gameScreen;
+EndScreen endScreen;
 
 
-float openingSize = 100;
+float pipeOpening = 80;
+float pipeSpawnPeriod = 80;
 
 
 class Flappy extends Container
@@ -21,8 +24,9 @@ class Flappy extends Container
 		this.gravity = 0.7f;
 		
 		this.image = new Image(loadImage("flappy.png"), 50, 50);
-		/* this.image.pImage.resize(50, 50); */
 		this.image.addToStage(this);
+		this.image.x = -25;
+		this.image.y = -25;
 	}
 	
 	void update() {
@@ -30,11 +34,15 @@ class Flappy extends Container
 		this.y += this.speedY;
 		
 		if (this.y > 600) {
-			this.removeFromStage();
+			gameScreen.gameOver();
 		}
 		else if (this.y < 0) {
 			this.y = 0;
 			this.speedY = 0;
+		}
+		
+		if (Input.isAnyKeyPressedOnce() || Input.isAnyMousePressedOnce()) {
+			this.flap();
 		}
 	}
 	
@@ -47,28 +55,133 @@ class Flappy extends Container
 class Pipe extends Rectangle
 {
 	
-	float speedX = -2.0f;
+	float speedX = -4.0f;
 	
 	Pipe(float x, float y, float width, float height) {
 		super(width, height);
 		this.x = x;
 		this.y = y;
+		
+		this.rectColor = color(100, 225, 100);
+		this.borderColor = color(100, 100, 100);
+		this.borderWeight = 5;
 	}
 	
 	void update() {
 		this.x += this.speedX;
+		
+		if (this.x < -this.width) {
+			this.removeFromStage();
+		}
+		
+		if (Util.pointInRectangle(this.getLocalX(gameScreen.flappy.x, gameScreen.flappy.y), this.getLocalY(gameScreen.x, gameScreen.flappy.y), 0, 0, this.width, this.height)) {
+			gameScreen.gameOver();
+		}
+		
 	}
 
 }
 
-void makePipes() {
-	float r = random(100, 500);
-	float rTop = r - openingSize;
-	float rBottom = r + openingSize;
-	Pipe pipe1 = new Pipe(800, 0, 75, rTop);
-	pipe1.addToStage(mainContainer);
-	Pipe pipe2 = new Pipe(800, rBottom, 75, 600 - rBottom);
-	pipe2.addToStage(mainContainer);
+class TitleScreen extends Container
+{
+	
+	Text title;
+	RectangleButton startBtn;
+	
+	TitleScreen() {
+		title = new Text("Flappy Hacks");
+		title.addToStage(this);
+		title.size = 24;
+		title.x = 400;
+		title.y = 200;
+
+		startBtn = new RectangleButton(90, 30, "Start");
+		startBtn.x = 400;
+		startBtn.y = 400;
+		startBtn.addToStage(this);
+	}
+	
+	void update() {
+		if (startBtn.releasedOnce) {
+			this.removeFromStage();
+			
+			gameScreen = new GameScreen();
+			gameScreen.addToStage(mainContainer);
+		}
+	}
+
+}
+
+class GameScreen extends Container
+{
+	
+	Flappy flappy;
+	Repeater repeater;
+	
+	GameScreen() {
+		flappy = new Flappy();
+		flappy.addToStage(this);
+		flappy.y = 50;
+		flappy.x = 120;
+		
+		repeater = new Repeater(pipeSpawnPeriod);
+	}
+	
+	void makePipes() {
+		float r = random(100, 500);
+		float rTop = r - pipeOpening;
+		float rBottom = r + pipeOpening;
+		Pipe pipe1 = new Pipe(800, 0, 100, rTop);
+		pipe1.addToStage(this);
+		Pipe pipe2 = new Pipe(800, rBottom, 100, 600 - rBottom);
+		pipe2.addToStage(this);
+	}
+
+	void update() {
+		repeater.update();
+		
+		if (repeater.triggered) {
+			makePipes();
+		}
+	}
+	
+	void gameOver() {
+		this.removeFromStage();
+		
+		endScreen = new EndScreen();
+		endScreen.addToStage(mainContainer);
+	}
+
+}
+
+class EndScreen extends Container
+{
+	
+	Text title;
+	RectangleButton okBtn;
+	
+	EndScreen() {
+		title = new Text("YOU DIED");
+		title.addToStage(this);
+		title.size = 24;
+		title.x = 400;
+		title.y = 200;
+
+		okBtn = new RectangleButton(90, 30, "OK");
+		okBtn.x = 400;
+		okBtn.y = 400;
+		okBtn.addToStage(this);
+	}
+	
+	void update() {
+		if (okBtn.releasedOnce) {
+			this.removeFromStage();
+			
+			titleScreen = new TitleScreen();
+			titleScreen.addToStage(mainContainer);
+		}
+	}
+
 }
 
 void setup ()
@@ -78,36 +191,33 @@ void setup ()
 	
 	backgroundImage = new Image(loadImage("background.png"), 800, 600);
 	backgroundImage.addToStage(mainContainer);
-	/* backgroundImage.pImage.resize(800, 600); */
 	
-	flappy = new Flappy();
-	flappy.addToStage(mainContainer);
-	flappy.y = 50;
-	flappy.x = 50;
-	
-	repeater = new Repeater(150);
+	titleScreen = new TitleScreen();
+	titleScreen.addToStage(mainContainer);
 }
 
 void draw ()
 {
 	background(0);
 
-	repeater.update();
-	
-	if (repeater.triggered) {
-		makePipes();
-	}
+	Input.update();
 
 	mainContainer.updateAll();
 	mainContainer.drawAll();
 }
 
 void mousePressed() {
-	
+	Input.mousePressed(mouseButton);
+}
+
+void mouseReleased() {
+	Input.mouseReleased(mouseButton);
 }
 
 void keyPressed() {
-	if (key == ' ') {
-		flappy.flap();
-	}
+	Input.keyPressed(key, keyCode);
+}
+
+void keyReleased() {
+	Input.keyReleased(key, keyCode);
 }
