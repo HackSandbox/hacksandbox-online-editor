@@ -4,12 +4,14 @@
     position: absolute;
     top:0;
     left:0;
+    overflow: hidden;
     .left-container {
         width:50%;
         height:100%;
         position: absolute;
         left:0;
-        top:0;
+        top:50px;
+        overflow: hidden;
         #code-editor {
             height:100%;
             width:100%;
@@ -21,8 +23,8 @@
         height:100%;
         position: absolute;
         right:0;
-        top:0;
-        background-color: black;
+        top:50px;
+        background-color: #161714;
         vertical-align: middle;
         text-align: center;
     }
@@ -30,5 +32,109 @@
     #render-canvas {
         max-width: 100%;
         margin-top:20px;
+    }
+}
+
+.alert-window {
+    &.not_visible {
+        //width:0;
+        //margin-left: 0;
+        transition: all ease 0.5s;
+        //height: 0;
+        top:-100px;
+        opacity: 0;
+    }
+    opacity:1;
+    box-shadow: rgba(0,0,0,0.5) 0 0 20px;
+    transition: all ease 0.5s;
+    overflow: hidden;
+    pointer-events: none;
+    width:500px;
+    height:auto;
+    top:50px;
+    position: fixed;
+    left:50%;
+    margin-left: -250px;
+    background-color: white;
+    z-index: 99;
+    .panel-heading {
+        padding: 20px;
+        font-size: 20px;
+        h3 {
+            font-size: 20px;
+        }
+    }
+    .panel-body {
+        font-size: 20px;
+        padding: 20px;
+    }
+}
+
+#global-shade {
+    display: none;
+    width:100%;
+    height:100%;
+    position: fixed;
+    left:0;
+    top:0;
+    z-index: 98;
+    background-color:rgba(0,0,0,0.2);
+}
+
+#console-container {
+    background-color:#1E1F1A;
+    padding:20px;
+    color:white;
+    border:none;
+    border-radius: 0;
+    overflow-y: scroll;
+}
+
+#control-bar {
+    width:100%;
+    height:50px;
+    background-color: #161714;
+    &.running {
+        background-color:#2E7D32;
+        transition:all ease 0.3s;
+    }
+    &.error {
+        background-color:#FF0000;
+        transition:all ease 0.3s;
+    }
+    .left-label {
+        color: white;
+        position: absolute;
+        line-height: 50px;
+        padding-left: 20px;
+        left:0;
+        top:0;
+        font-size: 30px;
+        opacity: 0.4;
+    }
+    ul {
+        margin:0;
+        padding:0;
+        text-align: center;
+        li {
+            color:white;
+            line-height: 50px;
+            font-size: 20px;
+            display: inline-block;
+            width: 50px;
+            opacity: 0.6;
+            transition: all ease 0.3s;
+            cursor:pointer;
+            &:hover {
+                opacity:1;
+                transition: all ease 0.3s;
+            }
+            &.disable {
+                opacity: 0.2;
+                &:hover {
+                    opacity: 0.2;
+                }
+            }
+        }
     }
 }
