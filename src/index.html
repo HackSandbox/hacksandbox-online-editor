@@ -1,0 +1,42 @@
+<script src="processing.min.js"></script>
+<script src="https://ssl.jackzh.com/file/js/jquery/jquery-2.2.2.min.js"></script>
+<textarea id="processing-code-area"></textarea>
+<button id="compile-button">Compile</button>
+<canvas id='render-canvas'></canvas>
+
+<script type="text/javascript">
+    var processing_code = " \
+    void setup(){ \
+        size(800,800); \
+    } \
+    void draw(){ \
+        background(0,0,0); \
+        render(); \
+    } \
+    ";
+
+    var processingInstance;
+
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+        }
+    $("#compile-button").click(function(){
+        //$("#render-canvas").width($("#render-canvas").width());
+        $("body").remove("canvas");
+        var new_guid = guid();
+        $("body").append("<canvas id='#render-canvas-" + new_guid + "'></canvas>");
+        processing_code += $("#processing-code-area").val();
+        //processingInstance.noLoop();
+        var jsCode = Processing.compile(processing_code).sourceCode;
+        processingInstance = new Processing($("#render-canvas-" + new_guid), eval(jsCode));
+    });
+
+    
+</script>

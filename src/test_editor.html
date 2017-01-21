@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Processing.js Editor</title>
+        <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+        <link href="less/main.less" type="text/less" rel="stylesheet" />
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/processing.min.js"></script>
+        <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+        <script src="https://ssl.jackzh.com/file/js/ace/ace-builds-1.2.2/src-min/ace.js"></script>
+        <script src="https://ssl.jackzh.com/file/js/less-js/less.min.js"></script>
+    </head>
+    <body>
+        <div id="app-container">
+            <div class="left-container">
+<div id="code-editor">void draw(){
+    size(500,500);
+    background(255,255,255);
+    text("Hello World!", 20, 20);
+}</div>
+            </div>
+            <div class="right-container">
+                <canvas id="render-canvas"></canvas>
+                <br><br>
+                <button class="btn btn-primaty" id="compile-button">Compile</button>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    var code_editor = ace.edit("code-editor");
+    code_editor.setTheme("ace/theme/monokai");
+    code_editor.getSession().setMode("ace/mode/java");
+    var processingInstance = null;
+    function compile(){
+        if (Processing.instances.length > 0) {
+            //Processing.instances[0].exit();
+            for (i=0; i < Processing.instances.length; (i++)) {
+              Processing.instances[i].exit();
+            }
+        }
+        var processingCode = code_editor.getValue();
+        var jsCode = Processing.compile(processingCode).sourceCode;
+        
+        //console.log(Processing.compile(processingCode));
+        var canvas = document.getElementById("render-canvas");
+        context = canvas.getContext('2d');
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if(processingInstance != null){
+            processingInstance.exit();
+        }
+        console.log(jsCode);
+        processingInstance = new Processing(canvas, eval(jsCode));
+        
+    }
+    $("#compile-button").click(function(){
+        compile();
+    });
+    compile();
+</script>
