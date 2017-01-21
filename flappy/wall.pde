@@ -42,27 +42,16 @@ class Wall{
 }
   
   boolean overlap(DisplayObject neighbour){
-    
-    // System.out.println(_actor.getClass());
-    if (obj instanceof Circle && neighbour instanceof Circle){
-      Circle a = (Circle) obj;
-      Circle b = (Circle) neighbour;
-      return circle_circle(obj.x, obj.y, a.getwidth(), neighbour.x, neighbour.y, b.getwidth());
-    }
-    else {
-      System.out.println("o: " + obj.getClass());
-      System.out.println("n: " + neighbour.getClass());
+        
       DisplayObject a = (DisplayObject) obj;
       DisplayObject b = (DisplayObject) neighbour;
       
-      System.out.println(a.x);
-      System.out.println(a.w);
       float ax1 = a.x + a.w;
       float ay1 = a.y + a.h;
       float bx1 = b.x + b.w;
       float by1 = b.y + b.h;
       return box_box(a.x, a.y, ax1, ay1, b.x, b.y, bx1, by1);
-    }
+    
     
   }
   

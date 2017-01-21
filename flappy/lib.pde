@@ -3,6 +3,8 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
+  float h;
+  float w;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -15,6 +17,8 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
+    this.w = 0;
+    this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
