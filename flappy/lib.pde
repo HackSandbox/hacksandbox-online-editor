@@ -3,8 +3,6 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
-  float h;
-  float w;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -17,8 +15,6 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
-    this.w = 0;
-    this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
@@ -473,15 +469,9 @@ static class Input
 
 	}
 	
-	static InputHelper mouseHelper;
-	static InputHelper keyHelper;
-	static InputHelper codedKeyHelper;
-	
-	static void initialize() {
-		mouseHelper = new InputHelper();
-		keyHelper = new InputHelper();
-		codedKeyHelper = new InputHelper();
-	}
+	static InputHelper mouseHelper = new Input.InputHelper();
+	static InputHelper keyHelper = new Input.InputHelper();
+	static InputHelper codedKeyHelper = new Input.InputHelper();
 	
 	static void mousePressed(int mouse) {
 		mouseHelper.pressed(mouse);
