@@ -1,42 +1,162 @@
-<script src="processing.min.js"></script>
-<script src="https://ssl.jackzh.com/file/js/jquery/jquery-2.2.2.min.js"></script>
-<textarea id="processing-code-area"></textarea>
-<button id="compile-button">Compile</button>
-<canvas id='render-canvas'></canvas>
-
-<script type="text/javascript">
-    var processing_code = " \
-    void setup(){ \
-        size(800,800); \
-    } \
-    void draw(){ \
-        background(0,0,0); \
-        render(); \
-    } \
-    ";
-
-    var processingInstance;
-
-
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
+<!doctype html>
+<html>
+    <head>
+        <title>Processing.js Editor</title>
+        <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+        <link href="less/main.less" type="text/less" rel="stylesheet" />
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/processing.min.js"></script>
+        <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+        <script src="https://ssl.jackzh.com/file/js/ace/ace-builds-1.2.2/src-min/ace.js"></script>
+        <script src="https://ssl.jackzh.com/file/js/less-js/less.min.js"></script>
+    </head>
+    <body onresize="resize();">
+        <div id="app-container">
+            <div id="control-bar">
+                <div class="left-label">STOPPED</div>
+                <ul>
+                    <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span></li>
+                    <li id="stop-button" class="disable" data-toggle="tooltip" data-placement="bottom" title="Stop"><span class="glyphicon glyphicon-stop"></span></li>
+                    <li data-toggle="tooltip" data-placement="bottom" title="Save"><span class="glyphicon glyphicon-save"></span></li>
+                </ul>
+            </div>
+            <div class="left-container">
+<div id="code-editor">void draw(){
+    size(500,500);
+    background(155,155,155);
+    text("Hello World!", 20, 20);
+}</div>
+                <pre id="console-container"></pre>
+            </div>
+            <div class="right-container">
+                <canvas id="render-canvas"></canvas>
+                <br><br>
+            </div>
+            <div id="global-shade"></div>
+            <div id="runtime-exception-window" class="alert-window not_visible panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Oops, seems like something is not right...</h3>
+                </div>
+                <div class="panel-body">
+                    Error message here.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    // Load processing library from engine directory
+    var libCode = "";
+    $.ajax({
+        url:"engine/lib.pde",
+        type:"GET",
+        success:function(data){
+            libCode = data;
+            init();
         }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
+    });
+    // Initialize ACE code editor interface
+    var code_editor = ace.edit("code-editor");
+    code_editor.setTheme("ace/theme/monokai");
+    code_editor.getSession().setMode("ace/mode/java");
+    var processingInstance = null;
+    var sketchStopped = true;
+    // Compile current source, and run the processing instance
+    function compile(){
+        if (Processing.instances.length > 0) {
+            //Processing.instances[0].exit();
+            for (i=0; i < Processing.instances.length; (i++)) {
+              Processing.instances[i].exit();
+            }
         }
-    $("#compile-button").click(function(){
-        //$("#render-canvas").width($("#render-canvas").width());
-        $("body").remove("canvas");
-        var new_guid = guid();
-        $("body").append("<canvas id='#render-canvas-" + new_guid + "'></canvas>");
-        processing_code += $("#processing-code-area").val();
-        //processingInstance.noLoop();
-        var jsCode = Processing.compile(processing_code).sourceCode;
-        processingInstance = new Processing($("#render-canvas-" + new_guid), eval(jsCode));
+        var processingCode = code_editor.getValue();
+        var jsCode = Processing.compile(libCode + processingCode).sourceCode;
+        
+        //console.log(Processing.compile(processingCode));
+        var canvas = document.getElementById("render-canvas");
+        context = canvas.getContext('2d');
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if(processingInstance != null){
+            processingInstance.exit();
+        }
+        //console.log(jsCode);
+        Processing.print = window.print;
+        processingInstance = new Processing(canvas, eval(jsCode));
+        processingInstance.print = window.print;
+        sketchStopped = false;
+        $("#stop-button").removeClass("disable");
+        $("#control-bar").addClass("running");
+        $("#control-bar").removeClass("error");
+        $("#control-bar .left-label").html("RUNNING");
+    }
+
+    // Stop the processing.js instance
+    $("#stop-button").click(function(){
+        stopSketch();
     });
 
+    // Compile the processing.js instance
+    $("#compile-button").click(function(){
+        compile();
+    });
+    
+    // Initialize the interface
+    function init(){
+        compile();
+        // $("#stop-button").click();
+        resize();
+    }
+    
+    // Custom global error handler
+    window.onerror = function (errorMsg, url, lineNumber) {
+        $("#runtime-exception-window").removeClass("not_visible");
+        $("#runtime-exception-window .panel-body").html(errorMsg);
+        $("#global-shade").fadeIn();
+        stopSketch();
+        $("#control-bar .left-label").html("ERROR");
+        $("#control-bar").addClass("error");
+        print("<span style='color:red;'>Exception raised. Please check your code.</span>");
+        return false;
+    }
+
+    $("#global-shade").click(function(){
+        $("#runtime-exception-window").addClass("not_visible");
+        $("#global-shade").fadeOut();
+    });
+
+    var lineCount = 0;
+    window.print = function(message){
+        $("#console-container").html($("#console-container").html() + "> [" + lineCount + "]" + message + "\n");
+        lineCount++;
+        consoleText = $("#console-container").html();
+        if(consoleText.length > 1000){
+            $("#console-container").html(consoleText.substr(consoleText.length - 1000, 1000));
+        }
+        $("#console-container").scrollTop($("#console-container")[0].scrollHeight);
+    };
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function stopSketch(){
+        //$("#control-bar").removeClass("error");
+        $("#control-bar").removeClass("running");
+        sketchStopped = true;
+        processingInstance.noLoop();
+        $("#stop-button").addClass("disable");
+        $("#control-bar .left-label").html("STOPPED");
+    }
+
+    function resize(){
+        $("#console-container").height(160);
+        $("#console-container").width($(".left-container").width() + 18);
+        $(".left-container").height(window.innerHeight - 50);
+        $(".right-container").height(window.innerHeight - 50);
+        $("#code-editor").height(window.innerHeight - 250);
+    }
+
+    print("processing.js online editor v1.0");
     
 </script>
