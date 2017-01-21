@@ -39,10 +39,12 @@ void keyPressed(){
 
 void mousePressed(){
   if (mouseButton == LEFT){
-    actor.x = actor.x - 10;
+    actor.x --;
+    actor.y --;
   }
   else if (mouseButton == RIGHT){
-    actor.x = actor.x + 10;
+    actor.x ++;
+    actor.y ++;
   }
   else if (mouseButton == CENTER){
     actor.x = 200;
