@@ -244,15 +244,15 @@ class Image extends DisplayObject
 class Text extends DisplayObject
 {
 	
-	String text;
+	String content;
 	float size;
 	int textColor;
 	int textAlpha;
 	int textAlignX;
 	int textAlignY;
 	
-	Text(String text) {
-		this.text = text;
+	Text(String content) {
+		this.content = content;
 		
 		size = 14;
 		textColor = color(0);
@@ -265,7 +265,7 @@ class Text extends DisplayObject
 		textAlign(this.textAlignX, this.textAlignY);
 		fill(this.textColor, this.textAlpha);
 		textSize(this.size);
-		text(this.text, 0, 0);
+		text(this.content, 0, 0);
 	}
 
 }
@@ -284,7 +284,7 @@ class RectangleButton extends Container
 	boolean holding;
 	boolean hovering;
 	
-	RectangleButton(float width, float height, String text) {
+	RectangleButton(float width, float height, String content) {
 		this.idleColor = color(200);
 		this.hoverColor = color(240);
 		this.pressedColor = color(160);
@@ -295,7 +295,7 @@ class RectangleButton extends Container
 		this.rectangle.rectColor = this.idleColor;
 		this.rectangle.addToStage(this);
 		
-		this.textField = new Text(text);
+		this.textField = new Text(content);
 		this.textField.addToStage(this);
 		
 		this.pressedOnce = false;

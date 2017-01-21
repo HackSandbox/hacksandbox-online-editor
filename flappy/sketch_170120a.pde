@@ -216,8 +216,6 @@ void setup ()
 	size(800, 600);
 	mainContainer = new Container();
 	
-	Input.initialize();
-	
 	backgroundImage = new Image(loadImage("background.png"), 800, 600);
 	backgroundImage.addToStage(mainContainer);
 	
