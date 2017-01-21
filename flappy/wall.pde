@@ -1,10 +1,10 @@
 class Wall{
   
   ArrayList<DisplayObject> _wall = new ArrayList<DisplayObject>();
-  DisplayObject _actor;
+  DisplayObject obj;
   
-  Wall(DisplayObject obj){
-    _actor = obj;
+  Wall(DisplayObject o){
+    obj = o;
   }
   
   void addwall(DisplayObject wall){
@@ -44,30 +44,24 @@ class Wall{
   boolean overlap(DisplayObject neighbour){
     
     // System.out.println(_actor.getClass());
-    if (_actor instanceof Circle && neighbour instanceof Circle){
-      Circle a = (Circle) _actor;
+    if (obj instanceof Circle && neighbour instanceof Circle){
+      Circle a = (Circle) obj;
       Circle b = (Circle) neighbour;
-      return circle_circle(_actor.x, _actor.y, a.getwidth(), neighbour.x, neighbour.y, b.getwidth());
-    }
-    else if (_actor instanceof Image && neighbour instanceof Rectangle) {
-      Image a = (Image) _actor;
-      Rectangle b = (Rectangle) neighbour;
-      return box_box(a.x, a.y, a.x + a._width, a.x + a._height, b.x, b.y, b.x + b.width, b.x + b.height);
-    }
-    else if (_actor instanceof Image && neighbour instanceof Image) {
-      Image a = (Image) _actor;
-      Image b = (Image) neighbour;
-      return box_box(a.x, a.y, a.x + a._width, a.x + a._height, b.x, b.y, b.x + b._width, b.x + b._height);
-    }
-    else if (_actor instanceof Rectangle && neighbour instanceof Image) {
-      Rectangle a = (Rectangle) _actor;
-      Image b = (Image) neighbour;
-      return box_box(a.x, a.y, a.x + a.width, a.x + a.height, b.x, b.y, b.x + b._width, b.x + b._height);
+      return circle_circle(obj.x, obj.y, a.getwidth(), neighbour.x, neighbour.y, b.getwidth());
     }
     else {
-      Rectangle a = (Rectangle) _actor;
-      Rectangle b = (Rectangle) neighbour;
-      return box_box(a.x, a.y, a.x + a.width, a.x + a.height, b.x, b.y, b.x + b.width, b.x + b.height);
+      System.out.println("o: " + obj.getClass());
+      System.out.println("n: " + neighbour.getClass());
+      DisplayObject a = (DisplayObject) obj;
+      DisplayObject b = (DisplayObject) neighbour;
+      
+      System.out.println(a.x);
+      System.out.println(a.w);
+      float ax1 = a.x + a.w;
+      float ay1 = a.y + a.h;
+      float bx1 = b.x + b.w;
+      float by1 = b.y + b.h;
+      return box_box(a.x, a.y, ax1, ay1, b.x, b.y, bx1, by1);
     }
     
   }
