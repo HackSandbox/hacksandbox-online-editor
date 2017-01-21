@@ -50,7 +50,7 @@ class Flappy extends Container
 	}
 	
 	void flap() {
-		this.speedY = -10.0f;
+		this.speedY = -12.0f;
 	}
 
 }
@@ -85,8 +85,9 @@ class Pipe extends Rectangle
 			gameScreen.gameOver();
 		}
 		
-		if (this.x + this.width < gameScreen.flappy.x && !this.addedToScore) {
-			
+		if (this.x + this.width < gameScreen.flappy.x && !this.addedToScore && this.y == 0) {
+			++score;
+			this.addedToScore = true;
 		}
 		
 	}
@@ -103,11 +104,11 @@ class TitleScreen extends Container
 	TitleScreen() {
 		title = new Text("Flappy Hacks");
 		title.addToStage(this);
-		title.size = 24;
+		title.size = 32;
 		title.x = 400;
 		title.y = 200;
 
-		highscoreTxt = new Text("Highscore: " + String.valueOf(highscore));
+		highscoreTxt = new Text("Highscore: " + highscore);
 		highscoreTxt.addToStage(this);
 		highscoreTxt.size = 20;
 		highscoreTxt.x = 400;
@@ -136,13 +137,30 @@ class GameScreen extends Container
 	Flappy flappy;
 	Repeater repeater;
 	
+	Text scoreTxt;
+	Container pipeContainer;
+	
 	GameScreen() {
-		flappy = new Flappy();
-		flappy.addToStage(this);
-		flappy.y = 50;
-		flappy.x = 120;
+	
+		this.pipeContainer = new Container();
+		this.pipeContainer.addToStage(this);
 		
-		repeater = new Repeater(pipeSpawnPeriod);
+		this.flappy = new Flappy();
+		this.flappy.addToStage(this);
+		this.flappy.y = 50;
+		this.flappy.x = 120;
+		
+		this.scoreTxt = new Text("");
+		this.scoreTxt.addToStage(this);
+		this.scoreTxt.size = 20;
+		this.scoreTxt.x = 10;
+		this.scoreTxt.y = 10;
+		this.scoreTxt.textAlignX = LEFT;
+		this.scoreTxt.textAlignY = TOP;
+
+		this.repeater = new Repeater(pipeSpawnPeriod);
+		
+		score = 0;
 	}
 	
 	void makePipes() {
@@ -150,12 +168,14 @@ class GameScreen extends Container
 		float rTop = r - pipeOpening;
 		float rBottom = r + pipeOpening;
 		Pipe pipe1 = new Pipe(800, 0, 100, rTop);
-		pipe1.addToStage(this);
+		pipe1.addToStage(this.pipeContainer);
 		Pipe pipe2 = new Pipe(800, rBottom, 100, 600 - rBottom);
-		pipe2.addToStage(this);
+		pipe2.addToStage(this.pipeContainer);
 	}
 
 	void update() {
+		scoreTxt.content = "Score: " + score;
+
 		repeater.update();
 		
 		if (repeater.triggered) {
@@ -188,7 +208,7 @@ class EndScreen extends Container
 		title.x = 400;
 		title.y = 200;
 
-		highscoreTxt = new Text("Highscore: " + String.valueOf(highscore));
+		highscoreTxt = new Text("Score: " + score + "\nHighscore: " + highscore);
 		highscoreTxt.addToStage(this);
 		highscoreTxt.size = 20;
 		highscoreTxt.x = 400;

@@ -486,7 +486,7 @@ static class Input
 			codedKeyHelper.pressed(keyCode);
 		}
 		else {
-			keyHelper.pressed(Character.getNumericValue(key));
+			keyHelper.pressed(int(key));
 		}
 	}
 	
@@ -495,7 +495,7 @@ static class Input
 			codedKeyHelper.released(keyCode);
 		}
 		else {
-			keyHelper.released(Character.getNumericValue(key));
+			keyHelper.released(int(key));
 		}
 	}
 	
@@ -518,15 +518,15 @@ static class Input
 	}
 	
 	static boolean isKeyPressedOnce(char key) {
-		return keyHelper.isPressedOnce(Character.getNumericValue(key));
+		return keyHelper.isPressedOnce(int(key));
 	}
 	
 	static boolean isKeyReleasedOnce(char key) {
-		return keyHelper.isReleasedOnce(Character.getNumericValue(key));
+		return keyHelper.isReleasedOnce(int(key));
 	}
 	
 	static boolean isKeyHolding(char key) {
-		return keyHelper.isHolding(Character.getNumericValue(key));
+		return keyHelper.isHolding(int(key));
 	}
 	
 	static boolean isCodedKeyPressedOnce(int codedKey) {
