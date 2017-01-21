@@ -34,11 +34,13 @@
             );
             $this->file_list = $file_list;
             $this->forked_from = "base";
-            $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from) VALUES (?,?,?)");
+            $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from, owner) VALUES (?,?,?)");
             $new_uuid = $this->uuid;
             $new_files = json_encode($this->file_list);
             $new_forked_from = "base";
-            $stmt->bind_param("sss", $new_uuid, $new_files, $new_forked_from);
+            $new_owner = $this->gen_uuid();
+            $this->owner = $new_owner;
+            $stmt->bind_param("sss", $new_uuid, $new_files, $new_forked_from, $new_owner);
             if($stmt->execute()){
                 $this->id = $stmt->insert_id;
                 return true;
