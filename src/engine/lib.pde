@@ -3,6 +3,8 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
+  float h;
+  float w;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -15,6 +17,8 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
+    this.w = 0;
+    this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
@@ -240,15 +244,15 @@ class Image extends DisplayObject
 class Text extends DisplayObject
 {
 	
-	String text;
+	String content;
 	float size;
 	int textColor;
 	int textAlpha;
 	int textAlignX;
 	int textAlignY;
 	
-	Text(String text) {
-		this.text = text;
+	Text(String content) {
+		this.content = content;
 		
 		size = 14;
 		textColor = color(0);
@@ -261,7 +265,7 @@ class Text extends DisplayObject
 		textAlign(this.textAlignX, this.textAlignY);
 		fill(this.textColor, this.textAlpha);
 		textSize(this.size);
-		text(this.text, 0, 0);
+		text(this.content, 0, 0);
 	}
 
 }
@@ -280,7 +284,7 @@ class RectangleButton extends Container
 	boolean holding;
 	boolean hovering;
 	
-	RectangleButton(float width, float height, String text) {
+	RectangleButton(float width, float height, String content) {
 		this.idleColor = color(200);
 		this.hoverColor = color(240);
 		this.pressedColor = color(160);
@@ -291,7 +295,7 @@ class RectangleButton extends Container
 		this.rectangle.rectColor = this.idleColor;
 		this.rectangle.addToStage(this);
 		
-		this.textField = new Text(text);
+		this.textField = new Text(content);
 		this.textField.addToStage(this);
 		
 		this.pressedOnce = false;
@@ -469,9 +473,15 @@ static class Input
 
 	}
 	
-	static InputHelper mouseHelper = new InputHelper();
-	static InputHelper keyHelper = new InputHelper();
-	static InputHelper codedKeyHelper = new InputHelper();
+	static InputHelper mouseHelper;
+	static InputHelper keyHelper;
+	static InputHelper codedKeyHelper;
+	
+	static void initialize() {
+		mouseHelper = new InputHelper();
+		keyHelper = new InputHelper();
+		codedKeyHelper = new InputHelper();
+	}
 	
 	static void mousePressed(int mouse) {
 		mouseHelper.pressed(mouse);
