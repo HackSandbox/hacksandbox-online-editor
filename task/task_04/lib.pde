@@ -3,6 +3,8 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
+  float w;
+  float h;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -15,6 +17,8 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
+    this.w = 0;
+    this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
@@ -163,6 +167,9 @@ class Rectangle extends DisplayObject
 		
 		this.width = width;
 		this.height = height;
+
+    this.h = height;
+    this.w = width;
 		
 		this.rectColor = color(255);
 		this.rectAlpha = 255;
@@ -225,6 +232,9 @@ class Image extends DisplayObject
 		
 		this._width = loadWidth;
 		this._height = loadHeight;
+  
+    this.h = loadHeight;
+    this.w = loadWidth;
 	}
 	
 	void draw() {
@@ -486,7 +496,7 @@ static class Input
 			codedKeyHelper.pressed(keyCode);
 		}
 		else {
-			keyHelper.pressed(int(key));
+			keyHelper.pressed(Character.getNumericValue(key));
 		}
 	}
 	
@@ -495,7 +505,7 @@ static class Input
 			codedKeyHelper.released(keyCode);
 		}
 		else {
-			keyHelper.released(int(key));
+			keyHelper.released(Character.getNumericValue(key));
 		}
 	}
 	
@@ -518,15 +528,15 @@ static class Input
 	}
 	
 	static boolean isKeyPressedOnce(char key) {
-		return keyHelper.isPressedOnce(int(key));
+		return keyHelper.isPressedOnce(Character.getNumericValue(key));
 	}
 	
 	static boolean isKeyReleasedOnce(char key) {
-		return keyHelper.isReleasedOnce(int(key));
+		return keyHelper.isReleasedOnce(Character.getNumericValue(key));
 	}
 	
 	static boolean isKeyHolding(char key) {
-		return keyHelper.isHolding(int(key));
+		return keyHelper.isHolding(Character.getNumericValue(key));
 	}
 	
 	static boolean isCodedKeyPressedOnce(int codedKey) {
