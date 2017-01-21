@@ -9,14 +9,14 @@ class HackSandBoxEditor {
         this.codeEditorInstance.setTheme("ace/theme/monokai");
         this.codeEditorInstance.getSession().setMode("ace/mode/java");
         this.javaCode = [];
-        this.libCode = null;
+        //this.libCode = null;
         this.jsCode = "";
         this.processingInstance = null;
         this.sketchStopped = true;
-        this.loadLibCode();
+        //this.loadLibCode();
         this.currentTab = 0;
         this.tabNames = [];
-        this.addTab("Main");
+        this.addTab();
         this.updateCode();
     }
 
@@ -29,6 +29,83 @@ class HackSandBoxEditor {
                 self.libCode = data;
             }
         });
+    }
+
+    saveSketch(callback){
+        var self = this;
+        var callback = callback;
+        var new_files = {};
+        for (var i = 0; i < this.tabNames.length; i++){
+            new_files[this.tabNames[i]] = this.javaCode[i];
+        }
+        $.ajax({
+            url:"api/sketches/" + this.uuid,
+            type:"PUT",
+            dataType:"json",
+            data:{
+                files:new_files
+            },
+            success:function(data){
+                console.log(data);
+                callback(data);
+            },
+            error:function(data){
+                console.log(data);
+                callback(false);
+            }
+        });
+    }
+
+    switchSketch(uuid, callback){
+        var callback = callback;
+        var self = this;
+        $.ajax({
+            url:"api/sketches/" + uuid,
+            type:"GET",
+            dataType:"json",
+            success:function(data){
+                self.deleteAllFiles();
+                for (var key in data.data.files){
+                    self.addTab(key);
+                    self.codeEditorInstance.setValue(data.data.files[key]);
+                }
+                self.switchToTab(0);
+                $(".right-label").html(data.data.uuid);
+                window.location.hash = data.data.uuid;
+                self.uuid = uuid;
+                callback(data);
+            },
+            error:function(data){
+                callback(false);
+            }
+        })
+    }
+
+    createSketch(callback){
+        var callback = callback;
+        var self = this;
+        $.ajax({
+            url:"api/sketches",
+            type:"POST",
+            dataType:"json",
+            success:function(data){
+                //console.log(data);
+                self.deleteAllFiles();
+                for (var key in data.data.files){
+                    self.addTab(key);
+                    self.codeEditorInstance.setValue(data.data.files[key]);
+                }
+                self.switchToTab(0);
+                $(".right-label").html(data.data.uuid);
+                self.uuid = uuid;
+                window.location.hash = data.data.uuid;
+                callback(data);
+            },
+            error:function(data){
+                //console.log(data);
+                callback(false);
+            }
+        })
     }
 
     addTab(name){
@@ -46,6 +123,12 @@ class HackSandBoxEditor {
             
             this.switchToTab(new_id);    
         }
+    }
+
+    deleteAllFiles(name){
+        this.tabNames = [];
+        this.javaCode = [];
+        $(".editor-tabs-container ul").html("");
     }
 
     switchToTab(id){
@@ -110,7 +193,7 @@ class HackSandBoxEditor {
     // Update code stored in memory
     updateCode(){
         this.javaCode[this.currentTab] = this.codeEditorInstance.getValue();
-        console.log(this.javaCode[this.currentTab]);
+        //console.log(this.javaCode[this.currentTab]);
     }
 
     resize(){
@@ -162,13 +245,36 @@ $(function(){
         editor.addTab(prompt("Enter a name: "));
     });
 
-    var loadAwait = setInterval(function(){
-        if(editor.libCode != null){
-            editor.addTab("Engine");
-            editor.codeEditorInstance.setValue(editor.libCode);
-            editor.switchToTab(0);
-            $("#full-screen-loading").fadeOut();
-            clearInterval(loadAwait);
-        }
-    }, 100);
+    $("#save-button").click(function(){
+        editor.saveSketch(function(result){
+            if(result){
+                print("Project saved");
+            } else {
+                print("failed to save.");
+            }
+        });
+    });
+
+    
+    function switchSketch(){
+        editor.switchSketch(window.location.href.split('#')[1], function(result){
+            //console.log(window.location.href.split('#')[1]);
+            if(!result){
+                editor.createSketch(function(result){
+                    //console.log(result);
+                });
+                $("#full-screen-loading").fadeOut();
+            } else {
+                $("#full-screen-loading").fadeOut();
+            }
+        });
+    }
+
+    switchSketch();
+
+    window.onhashchange = function(){
+        switchSketch();
+    }
+    
+
 });

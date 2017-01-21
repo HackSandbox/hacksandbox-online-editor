@@ -100,6 +100,8 @@
     width:100%;
     height:50px;
     background-color: #161714;
+    overflow: hidden;
+    position: relative;
     &.running {
         background-color:#2E7D32;
         transition:all ease 0.3s;
@@ -117,6 +119,17 @@
         top:0;
         font-size: 30px;
         opacity: 0.4;
+    }
+    .right-label {
+        color: white;
+        position: absolute;
+        line-height: 50px;
+        right:0;
+        top:0;
+        padding-right: 20px;
+        font-size: 20px;
+        opacity: 0.4;
+        text-align: right;
     }
     ul {
         margin:0;

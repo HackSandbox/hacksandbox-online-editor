@@ -5,6 +5,7 @@
     require_once "include/App.php";
     require_once "include/Router.php";
     require_once "include/User.php";
+    require_once "include/Sketch.php";
     $app = new App();
     if(!$app->initDatabase(
         "localhost",
@@ -40,6 +41,58 @@
         } else {
             $app->setRspStat(500)
                 ->setRspMsg("error")
+                ->respond();
+        }
+    });
+
+    $app->post("sketches", function($args, $router, $app){
+        $sketch = new Sketch($app);
+        if($sketch->create()){
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->setRspData(array(
+                    "id"=>$sketch->id,
+                    "uuid"=>$sketch->uuid,
+                    "files"=>$sketch->file_list,
+                    "forked_from"=>$sketch->forked_from
+                ))
+                ->respond();
+        } else {
+            $app->setRspStat(500)
+                ->setRspMsg("failed to create sketch")
+                ->respond();
+        }
+    });
+
+    $app->put("sketches/%uuid", function($args, $router, $app){
+        $sketch = new Sketch($app);
+        $new_files = json_encode($app->router->getRequestBody()['files']);
+        if($sketch->update($args["uuid"], $new_files)){
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->respond();
+        } else {
+            $app->setRspStat(500)
+                ->setRspMsg("failed to update sketch")
+                ->respond();
+        }
+    });
+
+    $app->get("sketches/%uuid", function($args, $router, $app){
+        $sketch = new Sketch($app);
+        if($sketch->fetch($args["uuid"])){
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->setRspData(array(
+                    "id"=>$sketch->id,
+                    "uuid"=>$sketch->uuid,
+                    "files"=>$sketch->file_list,
+                    "forked_from"=>$sketch->forked_from
+                ))
+                ->respond();
+        } else {
+            $app->setRspStat(404)
+                ->setRspMsg("sketch not found")
                 ->respond();
         }
     });
