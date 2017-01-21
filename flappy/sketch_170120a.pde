@@ -1,6 +1,6 @@
 Container mainContainer;
 Flappy flappy;
-Image background;
+Image backgroundImage;
 Repeater repeater;
 
 
@@ -20,8 +20,8 @@ class Flappy extends Container
 		this.speedY = 0;
 		this.gravity = 0.7f;
 		
-		this.image = new Image(loadImage("flappy.png"));
-		this.image.pImage.resize(50, 50);
+		this.image = new Image(loadImage("flappy.png"), 50, 50);
+		/* this.image.pImage.resize(50, 50); */
 		this.image.addToStage(this);
 	}
 	
@@ -76,9 +76,9 @@ void setup ()
 	size(800, 600);
 	mainContainer = new Container();
 	
-	background = new Image(loadImage("background.png"));
-	background.addToStage(mainContainer);
-	background.pImage.resize(800, 600);
+	backgroundImage = new Image(loadImage("background.png"), 800, 600);
+	backgroundImage.addToStage(mainContainer);
+	/* backgroundImage.pImage.resize(800, 600); */
 	
 	flappy = new Flappy();
 	flappy.addToStage(mainContainer);

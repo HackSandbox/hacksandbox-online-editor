@@ -181,15 +181,27 @@ class Image extends DisplayObject
 	PImage pImage;
 	int imageColor;
 	int imageAlpha;
+	int _width;
+	int _height;
+	boolean _resized;
 	
-	Image (PImage pImage) {
+	Image (PImage pImage, int width, int height) {
 		this.pImage = pImage;
 		
-		imageColor = color(255);
-		imageAlpha = 255;
+		this.imageColor = color(255);
+		this.imageAlpha = 255;
+		
+		this._width = width;
+		this._height = height;
+		
+		this._resized = false;
 	}
 	
 	void draw() {
+		if (!this._resized) {
+			pImage.resize(this._width, this._height);
+			this._resized = true;
+		}
 		tint(this.imageColor, this.imageAlpha);
 		image(this.pImage, 0, 0);
 	}
