@@ -183,7 +183,6 @@ class Image extends DisplayObject
 	int imageAlpha;
 	int _width;
 	int _height;
-	boolean _resized;
 	
 	Image (PImage pImage, int width, int height) {
 		this.pImage = pImage;
@@ -193,14 +192,11 @@ class Image extends DisplayObject
 		
 		this._width = width;
 		this._height = height;
-		
-		this._resized = false;
 	}
 	
 	void draw() {
-		if (!this._resized) {
+		if (pImage.width != this._width || pImage.height != this._height) {
 			pImage.resize(this._width, this._height);
-			this._resized = true;
 		}
 		tint(this.imageColor, this.imageAlpha);
 		image(this.pImage, 0, 0);
