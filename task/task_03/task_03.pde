@@ -10,7 +10,7 @@ void setup(){
 }
 
 void draw(){
-  background(255, 0, 0);
+  // background(255, 0, 0);
   
   mainContainer.updateAll();
   mainContainer.drawAll();
