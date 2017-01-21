@@ -38,8 +38,8 @@
             $new_uuid = $this->uuid;
             $new_files = json_encode($this->file_list);
             $new_forked_from = "base";
-            $new_owner = $this->gen_uuid();
-            $this->owner = $new_owner;
+            
+            $new_owner = $this->owner;
             $stmt->bind_param("ssss", $new_uuid, $new_files, $new_forked_from, $new_owner);
             if($stmt->execute()){
                 $this->id = $stmt->insert_id;

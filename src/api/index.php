@@ -47,6 +47,7 @@
 
     $app->post("sketches", function($args, $router, $app){
         $sketch = new Sketch($app);
+        $sketch->owner = $router->getRequestHeaders()["client-id"];
         if($sketch->create()){
             $app->setRspStat(200)
                 ->setRspMsg("ok")
@@ -54,7 +55,8 @@
                     "id"=>$sketch->id,
                     "uuid"=>$sketch->uuid,
                     "files"=>$sketch->file_list,
-                    "forked_from"=>$sketch->forked_from
+                    "forked_from"=>$sketch->forked_from,
+                    "owner"=>$sketch->owner
                 ))
                 ->respond();
         } else {
@@ -66,6 +68,7 @@
 
     $app->put("sketches/%uuid", function($args, $router, $app){
         $sketch = new Sketch($app);
+        $sketch->owner = $router->getRequestHeaders()["client-id"];
         $new_files = json_encode($app->router->getRequestBody()['files']);
         if($sketch->update($args["uuid"], $new_files)){
             $app->setRspStat(200)
@@ -80,6 +83,7 @@
 
     $app->get("sketches/%uuid", function($args, $router, $app){
         $sketch = new Sketch($app);
+        $sketch->owner = $router->getRequestHeaders()["client-id"];
         if($sketch->fetch($args["uuid"])){
             $app->setRspStat(200)
                 ->setRspMsg("ok")

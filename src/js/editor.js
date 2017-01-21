@@ -1,6 +1,12 @@
 class HackSandBoxEditor {
 
     constructor(){
+        if(this.getCookie("client-id") != ""){
+            this.clientId = this.getCookie("client-id");
+        } else {
+            this.clientId = this.genUuid();
+            this.setCookie("client-id", this.clientId, 356);
+        }
         this.consoleContainer = $("#console-container");
         this.leftContainer = $(".left-container");
         this.rightContainer = $(".right-container");
@@ -18,6 +24,36 @@ class HackSandBoxEditor {
         this.tabNames = [];
         this.addTab();
         this.updateCode();
+    }
+
+    genUuid(){
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+
+    getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
 
     loadLibCode(){
@@ -45,6 +81,9 @@ class HackSandBoxEditor {
             data:{
                 files:new_files
             },
+            headers:{
+                "client-id":this.clientId
+            },
             success:function(data){
                 console.log(data);
                 callback(data);
@@ -63,6 +102,9 @@ class HackSandBoxEditor {
             url:"api/sketches/" + uuid,
             type:"GET",
             dataType:"json",
+            headers:{
+                "client-id":this.clientId
+            },
             success:function(data){
                 self.deleteAllFiles();
                 for (var key in data.data.files){
@@ -88,8 +130,11 @@ class HackSandBoxEditor {
             url:"api/sketches",
             type:"POST",
             dataType:"json",
+            headers:{
+                "client-id":this.clientId
+            },
             success:function(data){
-                //console.log(data);
+                console.log(data);
                 self.deleteAllFiles();
                 for (var key in data.data.files){
                     self.addTab(key);
@@ -102,7 +147,7 @@ class HackSandBoxEditor {
                 callback(data);
             },
             error:function(data){
-                //console.log(data);
+                console.log(data);
                 callback(false);
             }
         })
@@ -154,7 +199,7 @@ class HackSandBoxEditor {
     switchToRunningState(){
         // Clean up previous session
         if (Processing.instances.length > 0) {
-            for (i=0; i < Processing.instances.length; (i++)) {
+            for (var i = 0; i < Processing.instances.length; (i++)) {
               Processing.instances[i].exit();
             }
         }
@@ -265,6 +310,7 @@ $(function(){
                 });
                 $("#full-screen-loading").fadeOut();
             } else {
+                console.log(result);
                 $("#full-screen-loading").fadeOut();
             }
         });
