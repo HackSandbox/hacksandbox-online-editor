@@ -72,7 +72,7 @@ class HackSandBoxEditor {
                 self.switchToTab(0);
                 $(".right-label").html(data.data.uuid);
                 window.location.hash = data.data.uuid;
-                self.uuid = uuid;
+                self.uuid = data.data.uuid;
                 callback(data);
             },
             error:function(data){
@@ -97,7 +97,7 @@ class HackSandBoxEditor {
                 }
                 self.switchToTab(0);
                 $(".right-label").html(data.data.uuid);
-                self.uuid = uuid;
+                self.uuid = data.data.uuid;
                 window.location.hash = data.data.uuid;
                 callback(data);
             },
