@@ -9,6 +9,9 @@ EndScreen endScreen;
 float pipeOpening = 80;
 float pipeSpawnPeriod = 80;
 
+int highscore = 0;
+int score = 0;
+
 
 class Flappy extends Container
 {
@@ -55,7 +58,8 @@ class Flappy extends Container
 class Pipe extends Rectangle
 {
 	
-	float speedX = -4.0f;
+	float speedX;
+	boolean addedToScore;
 	
 	Pipe(float x, float y, float width, float height) {
 		super(width, height);
@@ -65,6 +69,9 @@ class Pipe extends Rectangle
 		this.rectColor = color(100, 225, 100);
 		this.borderColor = color(100, 100, 100);
 		this.borderWeight = 5;
+		
+		this.speedX = -4.0f;
+		this.addedToScore = false;
 	}
 	
 	void update() {
@@ -78,6 +85,10 @@ class Pipe extends Rectangle
 			gameScreen.gameOver();
 		}
 		
+		if (this.x + this.width < gameScreen.flappy.x && !this.addedToScore) {
+			
+		}
+		
 	}
 
 }
@@ -86,6 +97,7 @@ class TitleScreen extends Container
 {
 	
 	Text title;
+	Text highscoreTxt;
 	RectangleButton startBtn;
 	
 	TitleScreen() {
@@ -94,6 +106,12 @@ class TitleScreen extends Container
 		title.size = 24;
 		title.x = 400;
 		title.y = 200;
+
+		highscoreTxt = new Text("Highscore: " + String.valueOf(highscore));
+		highscoreTxt.addToStage(this);
+		highscoreTxt.size = 20;
+		highscoreTxt.x = 400;
+		highscoreTxt.y = 280;
 
 		startBtn = new RectangleButton(90, 30, "Start");
 		startBtn.x = 400;
@@ -146,6 +164,8 @@ class GameScreen extends Container
 	}
 	
 	void gameOver() {
+		if (score > highscore) highscore = score;
+
 		this.removeFromStage();
 		
 		endScreen = new EndScreen();
@@ -157,6 +177,7 @@ class GameScreen extends Container
 class EndScreen extends Container
 {
 	
+	Text highscoreTxt;
 	Text title;
 	RectangleButton okBtn;
 	
@@ -166,6 +187,12 @@ class EndScreen extends Container
 		title.size = 24;
 		title.x = 400;
 		title.y = 200;
+
+		highscoreTxt = new Text("Highscore: " + String.valueOf(highscore));
+		highscoreTxt.addToStage(this);
+		highscoreTxt.size = 20;
+		highscoreTxt.x = 400;
+		highscoreTxt.y = 280;
 
 		okBtn = new RectangleButton(90, 30, "OK");
 		okBtn.x = 400;
@@ -188,6 +215,8 @@ void setup ()
 {
 	size(800, 600);
 	mainContainer = new Container();
+	
+	Input.initialize();
 	
 	backgroundImage = new Image(loadImage("background.png"), 800, 600);
 	backgroundImage.addToStage(mainContainer);
