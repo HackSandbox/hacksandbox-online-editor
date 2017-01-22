@@ -23,6 +23,7 @@
             <div id="control-bar">
                 <div class="left-label">STANDBY</div>
                 <ul>
+                    <li id="gallery-button"><i class="fa fa-home" aria-hidden="true"></i> GALLERY</li>
                     <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span> RUN</li>
                     <li id="stop-button" class="disable" data-toggle="tooltip" data-placement="bottom" title="Stop"><span class="glyphicon glyphicon-stop"></span> STOP</li>
                     <li data-toggle="tooltip" id="save-button" data-placement="bottom" title="Save"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</li>

@@ -462,7 +462,10 @@ $(function(){
 
     $("#create-your-own").click(function(){
         $("#home-splash").fadeOut();
-    })
+    });
+    $("#gallery-button").click(function(){
+        window.location.reload();
+    });
  
     nextTut(); 
      
@@ -476,7 +479,7 @@ $(function(){
                 });
                 $("#full-screen-loading").fadeOut();
             } else {
-                console.log(result);
+                $("#home-splash").fadeOut();
                 $("#full-screen-loading").fadeOut();
             }
         });
