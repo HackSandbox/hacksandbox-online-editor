@@ -16,7 +16,7 @@ class MainScreen extends Container
 }
 
 void setup() {
-	size(800, 600);
+	size(500, 500);
 	
 	stage = new Stage();
 	
