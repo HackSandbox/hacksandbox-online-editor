@@ -72,10 +72,15 @@ class DisplayObject
 		
 	}
 	
+	void updatePhysics() {
+		
+	}
+	
 	void updateAll() {
 		if (this.paused) return;
 		
 		this.updateStageMatrix();
+		this.updatePhysics();
 		this.update();
 	}
 	
@@ -131,6 +136,7 @@ class Container extends DisplayObject
 		if (this.paused) return;
 
 		this.updateStageMatrix();
+		this.updatePhysics();
 		this.update();
 		
 		for (int i = 0; i < this.children.size(); ++i) {
@@ -150,6 +156,50 @@ class Container extends DisplayObject
 		this.children.remove(child);
 		child.parent = null;
 	}
+}
+
+class MovableContainer extends Container
+{
+	float speedX;
+	float speedY;
+	float speedReduction;
+	float angularSpeed;
+	float angularSpeedReduction;
+	
+	MovableContainer() {
+		this.speedX = 0;
+		this.speedY = 0;
+		this.speedReduction = 0.1;
+		this.angularSpeed = 0;
+		this.angularSpeedReduction = 0.1;
+	}
+	
+	void updatePhysics() {
+		this.x += this.speedX;
+		this.y += this.speedY;
+		
+		this.rotation += this.angularSpeed;
+		
+		this.speedX *= (1.0 - this.speedReduction);
+		this.speedY *= (1.0 - this.speedReduction);
+		
+		this.angularSpeed *= (1.0 - this.angularSpeedReduction);
+	}
+	
+	void applyForce(float angle, float amount) {
+		this.speedX += Util.angleToX(angle, amount);
+		this.speedY += Util.angleToY(angle, amount);
+	}
+	
+	void applyForceXY(float forceX, float forceY) {
+		this.speedX += forceX;
+		this.speedY += forceY;
+	}
+	
+	void applyAngularForce(float amount) {
+		this.angularSpeed += amount;
+	}
+
 }
 
 class Stage extends Container
@@ -631,6 +681,21 @@ static class Util
 	
 	static float getAngle(float x, float y, float targetX, float targetY) {
 		return atan2(targetY - y, targetX - x);
+	}
+	
+	static float distance(float dx, float dy)
+	{
+		return sqrt(dx*dx + dy*dy);
+	}
+	
+	static float wrap(float x, float divisor, float margin) {
+		divisor += 2.0 * margin;
+		return (((x + margin) % divisor + divisor) % divisor) - margin;
+	}
+	
+	static float clamp(float val, float lower, float higher)
+	{
+		return val < lower ? lower : (val > higher ? higher : val);
 	}
 }
 
