@@ -475,11 +475,10 @@ $(function(){
             //console.log(window.location.href.split('#')[1]);
             if(!result){
                 editor.createSketch(function(result){
-                    //console.log(result);
+                    $("#home-splash").fadeOut();
                 });
                 $("#full-screen-loading").fadeOut();
             } else {
-                $("#home-splash").fadeOut();
                 $("#full-screen-loading").fadeOut();
             }
         });
