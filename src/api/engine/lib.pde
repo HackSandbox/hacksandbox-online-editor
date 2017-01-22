@@ -3,6 +3,8 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
+	float w;
+	float h;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -15,6 +17,8 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
+		this.w = 0;
+		this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
@@ -163,6 +167,9 @@ class Rectangle extends DisplayObject
 		
 		this.width = width;
 		this.height = height;
+
+		this.w = width;
+		this.h = height;
 		
 		this.rectColor = color(255);
 		this.rectAlpha = 255;
@@ -192,6 +199,9 @@ class Circle extends DisplayObject
 	Circle (float width, float height) {
 		this.width = width;
 		this.height = height;
+
+		this.w = width;
+		this.h = height;
 		
 		this.circleColor = color(255);
 		this.circleAlpha = 255;
@@ -225,6 +235,9 @@ class Image extends DisplayObject
 		
 		this._width = loadWidth;
 		this._height = loadHeight;
+
+		this.w = loadWidth;
+		this.h = loadHeight;
 	}
 	
 	void draw() {
