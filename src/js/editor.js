@@ -56,17 +56,6 @@ class HackSandBoxEditor {
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
 
-    loadLibCode(){
-        var self = this;
-        $.ajax({
-            url:"engine/lib.pde",
-            type:"GET",
-            success:function(data){
-                self.libCode = data;
-            }
-        });
-    }
-
     saveSketch(callback){
         var self = this;
         var callback = callback;
@@ -79,7 +68,8 @@ class HackSandBoxEditor {
             type:"PUT",
             dataType:"json",
             data:{
-                files:new_files
+                files:new_files,
+                title:$("#sketch-title-textbox").val()
             },
             headers:{
                 "client-id":this.clientId
@@ -135,6 +125,7 @@ class HackSandBoxEditor {
                 self.switchToTab(0);
                 window.location.hash = data.data.uuid;
                 self.uuid = data.data.uuid;
+                $("#sketch-title-textbox").val(data.data.title);
                 if(data.data.is_owner){
                     $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").show();
@@ -178,6 +169,7 @@ class HackSandBoxEditor {
                 self.switchToTab(0);
                 $(".right-label").html(data.data.uuid);
                 self.uuid = data.data.uuid;
+                $("#sketch-title-textbox").val(data.data.title);
                 window.location.hash = data.data.uuid;
                 callback(data);
             },
@@ -283,6 +275,16 @@ class HackSandBoxEditor {
         $(this.rightContainer).height(window.innerHeight - 50);
         $(this.codeEditor).height(window.innerHeight - 280);
     }
+
+    expandInfoPanel(){
+        $("#app-container").animate({'top':200});
+        $("#info-drop-down").animate({'top':0});
+    }
+
+    compressInfoPanel(){
+        $("#app-container").animate({'top':0});
+        $("#info-drop-down").animate({'top':-200});
+    }
 }
 
 var editor;
@@ -367,6 +369,22 @@ $(function(){
         });
     });
 
+    $("#expand-button").click(function(){
+        editor.expandInfoPanel();
+        $(this).hide();
+        $("#compress-button").show();
+    });
+
+
+    $("#compress-button").click(function(){
+        editor.compressInfoPanel();
+        $(this).hide();
+        $("#expand-button").show();
+    });
+
+    $("#new-button").click(function(){
+        window.location.hash = "new";
+    });
     
     function switchSketch(){
         editor.switchSketch(window.location.href.split('#')[1], function(result){

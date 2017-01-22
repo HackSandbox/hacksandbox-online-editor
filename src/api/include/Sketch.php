@@ -34,13 +34,15 @@
             );
             $this->file_list = $file_list;
             $this->forked_from = "base";
-            $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from, owner) VALUES (?,?,?,?)");
+            $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from, owner, title) VALUES (?,?,?,?,?)");
             $new_uuid = $this->uuid;
             $new_files = json_encode($this->file_list);
             $new_forked_from = "base";
+            $new_title = "untitled hack";
+            $this->title = $new_title;
             
             $new_owner = $this->owner;
-            $stmt->bind_param("ssss", $new_uuid, $new_files, $new_forked_from, $new_owner);
+            $stmt->bind_param("sssss", $new_uuid, $new_files, $new_forked_from, $new_owner, $new_title);
             if($stmt->execute()){
                 $this->id = $stmt->insert_id;
                 return true;
@@ -49,9 +51,9 @@
             }
         }
 
-        function update($uuid, $files){
-            $stmt = $this->app->db->prepare("UPDATE sketches SET files=? WHERE uuid=?");
-            $stmt->bind_param("ss", $files, $uuid);
+        function update($uuid, $files, $title){
+            $stmt = $this->app->db->prepare("UPDATE sketches SET files=?, title=? WHERE uuid=?");
+            $stmt->bind_param("sss", $files, $title, $uuid);
             if($stmt->execute()){
                 return true;
             } else {
@@ -61,16 +63,18 @@
 
         function fork($uuid, $owner){
             if($this->fetch($uuid)){
-                $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from, owner) VALUES (?,?,?,?)");
+                $stmt = $this->app->db->prepare("INSERT INTO sketches (uuid, files, forked_from, owner, title) VALUES (?,?,?,?,?)");
                 $new_uuid = $this->gen_uuid();
                 $new_files = json_encode($this->file_list);
                 $new_forked_from = $this->uuid;
                 $new_owner = $owner;
-                $stmt->bind_param("ssss", $new_uuid, $new_files, $new_forked_from, $new_owner);
+                $new_title = "forked hack " . substr($this->forked_from, 0 , 5);
+                $stmt->bind_param("sssss", $new_uuid, $new_files, $new_forked_from, $new_owner, $new_title);
                 if($stmt->execute()){
                     $this->id = $stmt->insert_id;
                     $this->uuid = $new_uuid;
                     $this->owner = $owner;
+                    $this->title = $new_title;
                     return true;
                 } else {
                     return false;
@@ -82,20 +86,21 @@
         }
 
         function fetch($uuid){
-            $stmt = $this->app->db->prepare("SELECT id, uuid, files, forked_from, owner FROM sketches WHERE uuid=?");
+            $stmt = $this->app->db->prepare("SELECT id, uuid, files, forked_from, owner, title FROM sketches WHERE uuid=?");
             $stmt->bind_param("s", $uuid);
             $stmt->execute();
             $stmt->store_result();
             if($stmt->num_rows == 0){
                 return false;
             } else {
-                $stmt->bind_result($result_id, $result_uuid, $result_files, $result_forked_from, $result_owner);
+                $stmt->bind_result($result_id, $result_uuid, $result_files, $result_forked_from, $result_owner, $result_title);
                 $stmt->fetch();
                 $this->id = $result_id;
                 $this->uuid = $result_uuid;
                 $this->file_list = json_decode($result_files, true);
                 $this->forked_from = $result_forked_from;
                 $this->owner = $result_owner;
+                $this->title = $result_title;
                 return true;
             }
         }

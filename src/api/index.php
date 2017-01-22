@@ -76,7 +76,8 @@
                     "id"=>$sketch->id,
                     "uuid"=>$sketch->uuid,
                     "files"=>$sketch->file_list,
-                    "forked_from"=>$sketch->forked_from
+                    "forked_from"=>$sketch->forked_from,
+                    "title"=>$sketch->title
                 ))
                 ->respond();
         } else {
@@ -89,8 +90,9 @@
     $app->put("sketches/%uuid", function($args, $router, $app){
         $sketch = new Sketch($app);
         $sketch->owner = $router->getRequestHeaders()["client-id"];
-        $new_files = json_encode($app->router->getRequestBody()['files']);
-        if($sketch->update($args["uuid"], $new_files)){
+        $body = $app->router->getRequestBody();
+        $new_files = json_encode($body["files"]);
+        if($sketch->update($args["uuid"], $new_files, $body['title'])){
             $app->setRspStat(200)
                 ->setRspMsg("ok")
                 ->respond();
@@ -111,7 +113,8 @@
                     "id"=>$sketch->id,
                     "uuid"=>$sketch->uuid,
                     "files"=>$sketch->file_list,
-                    "forked_from"=>$sketch->forked_from
+                    "forked_from"=>$sketch->forked_from,
+                    "title"=>$sketch->title
                 ))
                 ->respond();
         } else {
@@ -138,7 +141,8 @@
                     "uuid"=>$sketch->uuid,
                     "files"=>$sketch->file_list,
                     "forked_from"=>$sketch->forked_from,
-                    "is_owner"=>$is_owner
+                    "is_owner"=>$is_owner,
+                    "title"=>$sketch->title
                 ))
                 ->respond();
         } else {

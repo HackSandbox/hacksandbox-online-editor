@@ -15,14 +15,22 @@
         <script src="js/editor.js?v=0002" type="text/babel"></script>
     </head>
     <body>
+        <div id="info-drop-down">
+            <input type="text" id="sketch-title-textbox" value="untitled hack" />
+        </div>
+
         <div id="app-container">
             <div id="control-bar">
                 <div class="left-label">STANDBY</div>
                 <ul>
-                    <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span></li>
-                    <li id="stop-button" class="disable" data-toggle="tooltip" data-placement="bottom" title="Stop"><span class="glyphicon glyphicon-stop"></span></li>
-                    <li data-toggle="tooltip" id="save-button" data-placement="bottom" title="Save"><i class="fa fa-floppy-o" aria-hidden="true"></i></li>
-                    <li data-toggle="tooltip" id="fork-button" data-placement="bottom" title="Fork / Clone to Your Account"><i class="fa fa-code-fork" aria-hidden="true"></i></li>
+                    <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span> RUN</li>
+                    <li id="stop-button" class="disable" data-toggle="tooltip" data-placement="bottom" title="Stop"><span class="glyphicon glyphicon-stop"></span> STOP</li>
+                    <li data-toggle="tooltip" id="save-button" data-placement="bottom" title="Save"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</li>
+                    <li data-toggle="tooltip" id="fork-button" data-placement="bottom" title="Fork / Clone to Your Account"><i class="fa fa-code-fork" aria-hidden="true"></i> FORK</li>
+                    <li id="expand-button"><i class="fa fa-angle-down" aria-hidden="true"></i> TITLE</li>
+                    <li id="compress-button" style="display:none;"><i class="fa fa-angle-up" aria-hidden="true"></i> TITLE</li>
+                    |
+                    <li id="new-button"><i class="fa fa-file-code-o" aria-hidden="true"></i> NEW</li>
                 </ul>
                 <div class="right-label">idhere</div>
             </div>
@@ -63,7 +71,7 @@
                     Error message here.
                 </div>
             </div>
-            <div id="full-screen-loading"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Initializing Awesomeness</div>
+            <div id="full-screen-loading"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Initializing Hacks ...</div>
         </div>
     </body>
 </html>
@@ -79,10 +87,6 @@
         }
         $("#console-container").scrollTop($("#console-container")[0].scrollHeight);
     };
-
-    $(function () {
-        
-    });
 
     print("processing.js online editor v1.0");
     
