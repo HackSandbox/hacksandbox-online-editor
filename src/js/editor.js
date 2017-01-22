@@ -1,11 +1,11 @@
 class HackSandBoxEditor {
-
     constructor(){
         if(this.getCookie("client-id") != ""){
             this.clientId = this.getCookie("client-id");
         } else {
             this.clientId = this.genUuid();
             this.setCookie("client-id", this.clientId, 356);
+            $("#home-splash").fadeIn();
         }
         this.consoleContainer = $("#console-container");
         this.leftContainer = $(".left-container");
@@ -24,6 +24,7 @@ class HackSandBoxEditor {
         this.tabNames = [];
         this.addTab();
         this.updateCode();
+        this.first_checked = false;
     }
 
     genUuid(){
@@ -437,6 +438,10 @@ $(function(){
         $("#compress-button").show();
     });
 
+    $("#goto-editor-button").click(function(){
+        $("#home-splash").fadeOut();
+    });
+
 
     $("#compress-button").click(function(){
         editor.compressInfoPanel();
@@ -464,7 +469,7 @@ $(function(){
         $("#home-splash").fadeOut();
     });
     $("#gallery-button").click(function(){
-        window.location.reload();
+        $("#home-splash").fadeIn();
     });
  
     nextTut(); 
@@ -475,13 +480,15 @@ $(function(){
             //console.log(window.location.href.split('#')[1]);
             if(!result){
                 editor.createSketch(function(result){
-                    $("#home-splash").fadeIn();
+                    if(!editor.first_checked){
+                        $("#home-splash").fadeIn();
+                    }
                 });
                 $("#full-screen-loading").fadeOut();
             } else {
-                $("#home-splash").fadeOut();
                 $("#full-screen-loading").fadeOut();
             }
+            editor.first_checked = true;
         });
     }
 

@@ -165,7 +165,7 @@ body {
         right:0;
         top:0;
         padding-right: 20px;
-        font-size: 20px;
+        font-size: 14px;
         opacity: 0.4;
         text-align: right;
     }
@@ -428,8 +428,21 @@ body {
     cursor: pointer; 
 }
 
+#goto-editor-button {
+    color:white;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    opacity:0.6;
+    font-family: @default-editor-font;
+    &:hover {
+        opacity:1;
+    }
+}
+
 #home-splash {
     width:100%;
+    display: none;
     height:100%;
     position: fixed;
     top:0;

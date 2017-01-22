@@ -87,6 +87,8 @@
             <h1>Learn | Play | Hack</h1>
             <br><br>
             <a href="#base"><button id="create-your-own"><span class="glyphicon glyphicon-plus"></span> Create Your Own</button></a>
+            <br><br>
+            <div id="goto-editor-button">hacker.goToEditor();</div>
             <div class="showcase-row container">
                 
             </div>
