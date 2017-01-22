@@ -6,12 +6,15 @@ MainScreen mainScreen;
 
 class MainScreen extends Container
 {
+	
+	// Add your objects for your scene here
+
 	MainScreen() {
-		
+		// Initialize your scene objects here
 	}
 	
 	void update() {
-		
+		// update your scene objects here
 	}
 }
 

@@ -1,4 +1,4 @@
-Container mainContainer;
+Stage stage;
 Image backgroundImage;
 
 TitleScreen titleScreen;
@@ -104,13 +104,13 @@ class TitleScreen extends Container
 	TitleScreen() {
 		title = new Text("Flappy Hacks");
 		title.addToStage(this);
-		title.size = 32;
+		title.fontSize = 32;
 		title.x = 400;
 		title.y = 200;
 
 		highscoreTxt = new Text("Highscore: " + highscore);
 		highscoreTxt.addToStage(this);
-		highscoreTxt.size = 20;
+		highscoreTxt.fontSize = 20;
 		highscoreTxt.x = 400;
 		highscoreTxt.y = 280;
 
@@ -125,7 +125,7 @@ class TitleScreen extends Container
 			this.removeFromStage();
 			
 			gameScreen = new GameScreen();
-			gameScreen.addToStage(mainContainer);
+			gameScreen.addToStage(stage);
 		}
 	}
 
@@ -148,11 +148,11 @@ class GameScreen extends Container
 		this.flappy = new Flappy();
 		this.flappy.addToStage(this);
 		this.flappy.y = 50;
-		this.flappy.x = 120;
+		this.flappy.x = 200;
 		
 		this.scoreTxt = new Text("");
 		this.scoreTxt.addToStage(this);
-		this.scoreTxt.size = 20;
+		this.scoreTxt.fontSize = 20;
 		this.scoreTxt.x = 10;
 		this.scoreTxt.y = 10;
 		this.scoreTxt.textAlignX = LEFT;
@@ -189,7 +189,7 @@ class GameScreen extends Container
 		this.removeFromStage();
 		
 		endScreen = new EndScreen();
-		endScreen.addToStage(mainContainer);
+		endScreen.addToStage(stage);
 	}
 
 }
@@ -204,19 +204,19 @@ class EndScreen extends Container
 	EndScreen() {
 		title = new Text("YOU DIED");
 		title.addToStage(this);
-		title.size = 24;
-		title.x = 400;
-		title.y = 200;
+		title.fontSize = 24;
+		title.x = stage.getCenterX();
+		title.y = stage.getCenterY() - 100;
 
 		highscoreTxt = new Text("Score: " + score + "\nHighscore: " + highscore);
 		highscoreTxt.addToStage(this);
-		highscoreTxt.size = 20;
-		highscoreTxt.x = 400;
-		highscoreTxt.y = 280;
+		highscoreTxt.fontSize = 20;
+		highscoreTxt.x = stage.getCenterX();
+		highscoreTxt.y = stage.getCenterY();
 
 		okBtn = new RectangleButton(90, 30, "OK");
-		okBtn.x = 400;
-		okBtn.y = 400;
+		okBtn.x = stage.getCenterX();
+		okBtn.y = stage.getCenterY() + 100;
 		okBtn.addToStage(this);
 	}
 	
@@ -225,7 +225,7 @@ class EndScreen extends Container
 			this.removeFromStage();
 			
 			titleScreen = new TitleScreen();
-			titleScreen.addToStage(mainContainer);
+			titleScreen.addToStage(stage);
 		}
 	}
 
@@ -234,13 +234,13 @@ class EndScreen extends Container
 void setup ()
 {
 	size(800, 600);
-	mainContainer = new Container();
+	stage = new Stage();
 	
 	backgroundImage = new Image(loadImage("background.png"), 800, 600);
-	backgroundImage.addToStage(mainContainer);
+	backgroundImage.addToStage(stage);
 	
 	titleScreen = new TitleScreen();
-	titleScreen.addToStage(mainContainer);
+	titleScreen.addToStage(stage);
 }
 
 void draw ()
@@ -249,8 +249,7 @@ void draw ()
 
 	Input.update();
 
-	mainContainer.updateAll();
-	mainContainer.drawAll();
+	stage.run();
 }
 
 void mousePressed() {

@@ -1,14 +1,36 @@
+/**
+ * The base class of all displayable objects. Contains basic spatial properties such as x, y, rotation, scale, etc.
+ * Contains a <draw> method to be called every frame during the drawing process, which can be overridden to produce custom graphics.
+ * Also contains an <update> method to be called every frame. Some helper methods only work correctly when called within this method.
+ * Transformation and styling is pushed and popped automatically before and after the <draw> method call.
+*/
 class DisplayObject 
 {
+	/** Parent Container of this DisplayObject. */
 	Container parent;
+	
+	/** The x coordinate. */
 	float x;
+	
+	/** The y coordinate. */
 	float y;
+	
+	/** The rotation, in radian. */
 	float rotation;
+	
+	/** The x-scale (stretching). */
 	float scaleX;
+	
+	/** The y-scale (stretching). */
 	float scaleY;
+	
+	/** If false, draw method will no longer be called. */
 	boolean visible;
+	
+	/** If true, update method will no longer be called. */
 	boolean paused;
 	
+	/** The global transform matrix. */
 	protected Matrix stageMatrix;
 
 	DisplayObject() {
@@ -24,10 +46,18 @@ class DisplayObject
 		this.stageMatrix = new Matrix(1, 0, 0, 1, 0, 0);
 	}
 	
+	/**
+	 * The draw method to be called each frame. Some drawing operations can only be called within this method.
+	 * Should be overridden.
+	*/
 	void draw() {
 		
 	}
 	
+	/**
+	 * A method used to invoke the update method and related preparations.
+	 * In the Container class, this method also calls the updateAll method of all of its children.
+	*/
 	void drawAll() {
 		if (!this.visible) return;
 		
@@ -41,6 +71,10 @@ class DisplayObject
 		popMatrix();
 	}
 	
+	/**
+	 * Updates the stageMatrix property using its parent property.
+	 * Should not be called by user.
+	*/
 	void updateStageMatrix() {
 		this.stageMatrix.createBox(this.scaleX, this.scaleY, this.rotation, this.x, this.y);
 		if (this.parent != null) {
@@ -48,54 +82,106 @@ class DisplayObject
 		}
 	}
 	
+	/**
+	 * Returns the local x-coordinate given the stage coordinates.
+	 * Only works when called inside update.
+	 * @param stageX stage x-coordinate
+	 * @param stageY stage y-coordinate
+	*/
 	protected float getLocalX(float stageX, float stageY) {
 		return this.stageMatrix.transformInverseX(stageX, stageY);
 	}
 	
+	/**
+	 * Returns the local y-coordinate given the stage coordinates.
+	 * Only works when called inside update.
+	 * @param stageX Stage x-coordinate
+	 * @param stageY Stage y-coordinate
+	*/
 	protected float getLocalY(float stageX, float stageY) {
 		return this.stageMatrix.transformInverseY(stageX, stageY);
 	}
 	
+	/**
+	 * Returns the local x-coordinate of the global mouse coordinates.
+	 * Only works when called inside update.
+	*/
 	protected float getLocalMouseX() {
 		return this.getLocalX(mouseX, mouseY);
 	}
 	
+	/**
+	 * Returns the local y-coordinate of the global mouse coordinates.
+	 * Only works when called inside update.
+	*/
 	protected float getLocalMouseY() {
 		return this.getLocalY(mouseX, mouseY);
 	}
 	
+	/**
+	 * The update method to be called each frame. Some methods can only be called within this method.
+	 * Should be overridden.
+	*/
 	void update() {
 		
 	}
 	
+	/**
+	 * A special update method to be called each frame. 
+	 * Usually used by library classes to update physics information.
+	 * Can be overridden.
+	*/
+	void updatePhysics() {
+		
+	}
+	
+	/**
+	 * A method used to invoke the draw method and related preparations.
+	 * In the Container class, this method also calls the drawAll method of all of its children.
+	*/
 	void updateAll() {
 		if (this.paused) return;
 		
 		this.updateStageMatrix();
+		this.updatePhysics();
 		this.update();
 	}
 	
+	/**
+	 * Add this DisplayObject as a child of the parent, allowing draw and update methods to be called by the stage.
+	 * @param parent The parent container.
+	*/
 	void addToStage(Container parent) {
 		parent.addChild(this);
 	}
 	
+	/**
+	 * Setup the Processing transform for drawing.
+	 * Should not be called by user.
+	*/
 	void transform() {
 		translate(this.x, this.y);
 		rotate(this.rotation);
 		scale(scaleX, scaleY);
 	}
 	
-	void updateMatrix() {
-		
-	}
-	
+	/**
+	 * Remove this DisplayObject from its parent, thus making it unable to receive any draw or update calls.
+	 * Used to dispose the DisplayObject.
+	*/
 	void removeFromStage() {
 		if (this.parent != null) this.parent.removeChild(this);
 	}
 }
 
+/**
+ * A Container class that can contain children DisplayObjects.
+ * Since this class extends DisplayObject, it can also contain children Containers, making a display list structure.
+ * The draw and update call of a container happens before the calls on the children.
+*/
 class Container extends DisplayObject
 {
+	/** The list of children of this container. */
 	ArrayList<DisplayObject> children;
 
 	Container() {
@@ -127,6 +213,7 @@ class Container extends DisplayObject
 		if (this.paused) return;
 
 		this.updateStageMatrix();
+		this.updatePhysics();
 		this.update();
 		
 		for (int i = 0; i < this.children.size(); ++i) {
@@ -136,16 +223,98 @@ class Container extends DisplayObject
 		}
 	}
 	
+	/** 
+	 * Attach a child to this container.
+	 * @param child The child to attach.
+	*/
 	void addChild(DisplayObject child) {
 		if (child.parent != null) child.parent.removeChild(child);
 		this.children.add(child);
 		child.parent = this;
 	}
 	
+	/**
+	 * Remove a child from this container.
+	 * @param child The child to remove.
+	*/
 	void removeChild(DisplayObject child) {
 		this.children.remove(child);
 		child.parent = null;
 	}
+}
+
+class MovableContainer extends Container
+{
+	float speedX;
+	float speedY;
+	float speedReduction;
+	float angularSpeed;
+	float angularSpeedReduction;
+	
+	MovableContainer() {
+		this.speedX = 0;
+		this.speedY = 0;
+		this.speedReduction = 0.1;
+		this.angularSpeed = 0;
+		this.angularSpeedReduction = 0.1;
+	}
+	
+	void updatePhysics() {
+		this.x += this.speedX;
+		this.y += this.speedY;
+		
+		this.rotation += this.angularSpeed;
+		
+		this.speedX *= (1.0 - this.speedReduction);
+		this.speedY *= (1.0 - this.speedReduction);
+		
+		this.angularSpeed *= (1.0 - this.angularSpeedReduction);
+	}
+	
+	void applyForce(float angle, float amount) {
+		this.speedX += Util.angleToX(angle, amount);
+		this.speedY += Util.angleToY(angle, amount);
+	}
+	
+	void applyForceXY(float forceX, float forceY) {
+		this.speedX += forceX;
+		this.speedY += forceY;
+	}
+	
+	void applyAngularForce(float amount) {
+		this.angularSpeed += amount;
+	}
+
+}
+
+class Stage extends Container
+{
+	
+	Stage() {
+		
+	}
+	
+	void run() {
+		this.updateAll();
+		this.drawAll();
+	}
+	
+	float getScreenWidth() {
+		return width;
+	}
+	
+	float getScreenHeight() {
+		return height;
+	}
+	
+	float getCenterX() {
+		return width / 2.0f;
+	}
+	
+	float getCenterY() {
+		return height / 2.0f;
+	}
+	
 }
 
 class Rectangle extends DisplayObject
@@ -241,7 +410,7 @@ class Text extends DisplayObject
 {
 	
 	String content;
-	float size;
+	float fontSize;
 	int textColor;
 	int textAlpha;
 	int textAlignX;
@@ -250,17 +419,17 @@ class Text extends DisplayObject
 	Text(String content) {
 		this.content = content;
 		
-		size = 14;
-		textColor = color(0);
-		textAlpha = 255;
-		textAlignX = CENTER;
-		textAlignY = CENTER;
+		this.fontSize = 14;
+		this.textColor = color(0);
+		this.textAlpha = 255;
+		this.textAlignX = CENTER;
+		this.textAlignY = CENTER;
 	}
 	
 	void draw() {
 		textAlign(this.textAlignX, this.textAlignY);
 		fill(this.textColor, this.textAlpha);
-		textSize(this.size);
+		textSize(this.fontSize);
 		text(this.content, 0, 0);
 	}
 
@@ -577,6 +746,57 @@ static class Util
 		float dy = (y - centerY);
 		return sqrt(dx * dx + dy * dy) < distance;
 	}
+	
+	boolean circleIntersect(float circle1X, float circle1Y, float circle1Radius, float circle2X, float circle2Y, float circle2Radius) {
+		float dxSQ = (circle2X - circle1X)*(circle2X - circle1X);
+		float dySQ = (circle2Y - circle1Y)*(circle2Y - circle1Y);
+		float rSQ = (circle1Radius + circle2Radius)*(circle1Radius + circle2Radius);
+		float drSQ = (circle1Radius - circle2Radius)*(circle1Radius - circle2Radius);
+		
+		return (dxSQ + dySQ <= rSQ && dxSQ + dySQ >= drSQ);
+	}
+	
+	boolean rectIntersect(float ax0, float ay0, float ax1, float ay1, float bx0, float by0, float bx1, float by1) {
+		float ax1 = ax0 + rect1Width;
+		float ay1 = ay0 + rect1Height;
+		float topA = min(ay0, ay1);
+		float botA = max(ay0, ay1);
+		float leftA = min(ax0, ax1);
+		float rightA = max(ax0, ax1);
+		float topB = min(by0, by1);
+		float botB = max(by0, by1);
+		float leftB = min(bx0, bx1);
+		float rightB = max(bx0, bx1);
+
+		return !(botA <= topB  || botB <= topA || rightA <= leftB || rightB <= leftA);
+	}
+	
+	static float angleToX(float angle, float distance) {
+		return cos(angle) * distance;
+	}
+	
+	static float angleToY(float angle, float distance) {
+		return sin(angle) * distance;
+	}
+	
+	static float getAngle(float x, float y, float targetX, float targetY) {
+		return atan2(targetY - y, targetX - x);
+	}
+	
+	static float distance(float dx, float dy)
+	{
+		return sqrt(dx*dx + dy*dy);
+	}
+	
+	static float wrap(float x, float divisor, float margin) {
+		divisor += 2.0 * margin;
+		return (((x + margin) % divisor + divisor) % divisor) - margin;
+	}
+	
+	static float clamp(float val, float lower, float higher)
+	{
+		return val < lower ? lower : (val > higher ? higher : val);
+	}
 }
 
 class Matrix {
@@ -859,3 +1079,4 @@ class Matrix {
 	}
 
 }
+
