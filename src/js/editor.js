@@ -131,6 +131,7 @@ class HackSandBoxEditor {
                     $("#save-button").show();
                     //$("#fork-button").hide();
                     $(".right-container").removeClass("expanded");
+                    self.openTut();
                 } else {
                     $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").hide();
@@ -138,6 +139,7 @@ class HackSandBoxEditor {
                     self.compile();
                     self.switchToRunningState();
                     $(".right-container").addClass("expanded");
+                    self.closeTut();
                 }
                 callback(data);
             },
@@ -300,7 +302,7 @@ class HackSandBoxEditor {
 
     captureCanvas(){
         var canvas = document.getElementById("render-canvas");
-        var img    = canvas.toDataURL("image/png");
+        var img    = canvas.toDataURL("image/png",0.2);
         $.ajax({
             url:"api/sketches/" + this.uuid + "/thumbnail",
             type:"POST",
