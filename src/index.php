@@ -24,9 +24,9 @@
                 <div class="left-label">STANDBY</div>
                 <ul>
                     <li id="gallery-button"><i class="fa fa-home" aria-hidden="true"></i> GALLERY</li>
-                    <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span> RUN</li>
+                    <li id="compile-button" data-toggle="tooltip" data-placement="bottom" title="Compile / Run"><span class="glyphicon glyphicon-play-circle"></span> RUN &amp; SAVE</li>
                     <li id="stop-button" class="disable" data-toggle="tooltip" data-placement="bottom" title="Stop"><span class="glyphicon glyphicon-stop"></span> STOP</li>
-                    <li data-toggle="tooltip" id="save-button" data-placement="bottom" title="Save"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</li>
+                    <!--<li data-toggle="tooltip" id="save-button" data-placement="bottom" title="Save"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</li>-->
                     <li data-toggle="tooltip" id="fork-button" data-placement="bottom" title="Fork / Clone to Your Account"><i class="fa fa-code-fork" aria-hidden="true"></i> FORK</li>
                     <li id="expand-button"><i class="fa fa-angle-down" aria-hidden="true"></i> TITLE</li>
                     <li id="compress-button" style="display:none;"><i class="fa fa-angle-up" aria-hidden="true"></i> TITLE</li>
