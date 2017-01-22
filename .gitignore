@@ -1,1 +1,4 @@
 db/*
+db/ib_logfile0
+db/ib_logfile1
+db/ibdata1

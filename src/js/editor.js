@@ -95,6 +95,27 @@ class HackSandBoxEditor {
         });
     }
 
+    forkSketch(callback){
+        var self = this;
+        var callback = callback;
+        $.ajax({
+            url:"api/sketches/" + this.uuid,
+            type:"POST",
+            dataType:"json",
+            headers:{
+                "client-id":this.clientId
+            },
+            success:function(data){
+                console.log(data);
+                callback(data);
+            },
+            error:function(data){
+                console.log(data);
+                callback(false);
+            }
+        });
+    }
+
     switchSketch(uuid, callback){
         var callback = callback;
         var self = this;
@@ -112,9 +133,17 @@ class HackSandBoxEditor {
                     self.codeEditorInstance.setValue(data.data.files[key]);
                 }
                 self.switchToTab(0);
-                $(".right-label").html(data.data.uuid);
                 window.location.hash = data.data.uuid;
                 self.uuid = data.data.uuid;
+                if(data.data.is_owner){
+                    $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- " + data.data.forked_from.substring(0,5));
+                    $("#save-button").show();
+                    $("#fork-button").hide();
+                } else {
+                    $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- " + data.data.forked_from.substring(0,5));
+                    $("#save-button").hide();
+                    $("#fork-button").show();
+                }
                 callback(data);
             },
             error:function(data){
@@ -135,6 +164,8 @@ class HackSandBoxEditor {
             },
             success:function(data){
                 console.log(data);
+                $("#save-button").show();
+                $("#fork-button").hide();
                 self.deleteAllFiles();
                 for (var key in data.data.files){
                     self.addTab(key);
@@ -300,6 +331,20 @@ $(function(){
         });
     });
 
+    $("#fork-button").click(function(){
+        $("#full-screen-loading").fadeIn();
+        editor.forkSketch(function(result){
+            if(result){
+                editor.switchSketch(result.data.uuid, function(data){
+                    $("#full-screen-loading").fadeOut();
+                });
+            } else {
+                print("Failed to fork sketch");
+                $("#full-screen-loading").fadeOut();
+            }
+        });
+    });
+
     
     function switchSketch(){
         editor.switchSketch(window.location.href.split('#')[1], function(result){
@@ -321,6 +366,8 @@ $(function(){
     window.onhashchange = function(){
         switchSketch();
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
     
 
 });

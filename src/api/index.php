@@ -55,8 +55,7 @@
                     "id"=>$sketch->id,
                     "uuid"=>$sketch->uuid,
                     "files"=>$sketch->file_list,
-                    "forked_from"=>$sketch->forked_from,
-                    "owner"=>$sketch->owner
+                    "forked_from"=>$sketch->forked_from
                 ))
                 ->respond();
         } else {
@@ -81,10 +80,10 @@
         }
     });
 
-    $app->get("sketches/%uuid", function($args, $router, $app){
+    $app->post("sketches/%uuid", function($args, $router, $app){
         $sketch = new Sketch($app);
         $sketch->owner = $router->getRequestHeaders()["client-id"];
-        if($sketch->fetch($args["uuid"])){
+        if($sketch->fork($args["uuid"],$router->getRequestHeaders()["client-id"])){
             $app->setRspStat(200)
                 ->setRspMsg("ok")
                 ->setRspData(array(
@@ -95,11 +94,40 @@
                 ))
                 ->respond();
         } else {
+            $app->setRspStat(500)
+                ->setRspMsg("failed to fork sketch")
+                ->respond();
+        }
+    });
+
+    $app->get("sketches/%uuid", function($args, $router, $app){
+        $sketch = new Sketch($app);
+        //$sketch->owner = $router->getRequestHeaders()["client-id"];
+        
+        if($sketch->fetch($args["uuid"])){
+            if($sketch->owner === $router->getRequestHeaders()["client-id"]){
+                $is_owner = true;
+            } else {
+                $is_owner = false;
+            }
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->setRspData(array(
+                    "id"=>$sketch->id,
+                    "uuid"=>$sketch->uuid,
+                    "files"=>$sketch->file_list,
+                    "forked_from"=>$sketch->forked_from,
+                    "is_owner"=>$is_owner
+                ))
+                ->respond();
+        } else {
             $app->setRspStat(404)
                 ->setRspMsg("sketch not found")
                 ->respond();
         }
     });
+
+    
 
     $app->router->route();
 ?>
