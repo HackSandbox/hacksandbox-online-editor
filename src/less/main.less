@@ -2,6 +2,10 @@
 
 @default-editor-font: "Lucida Console", Monaco, monospace;
 
+body {
+    background-color:black;
+}
+
 #app-container {
     width:100%;
     height:100%;
@@ -211,4 +215,54 @@
     background-color: rgba(0,0,0,0.5);
     font-family: @default-editor-font;
 
+}
+
+.uploaded-image-container {
+    width:40%;
+    height:100%;
+    background-color:rgba(0,0,0,0.8);
+    box-shadow: rgba(0,0,0,0.5) 0 0 20px;
+    position: fixed;
+    right:0;
+    top:0;
+    z-index: 99;
+    right:-100%;
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+    display: none;
+}
+
+.box__button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width:100%;
+    height:100px;
+}
+.box {
+    display: block;
+    width:100%;
+    height: 100%;
+    label {
+        display: block;
+        font-size: 60px;
+        font-weight: 100;
+    }
+}
+
+.box.has-advanced-upload {
+    .box__dragndrop {
+        display: block;
+        width:100%;
+        height:100%;
+        padding:40px;
+        padding-top: 100px;
+        text-align: center;
+        color:rgba(255,255,255,0.3);
+        font-size: 60px;
+    }
 }

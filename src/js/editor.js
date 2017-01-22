@@ -136,11 +136,11 @@ class HackSandBoxEditor {
                 window.location.hash = data.data.uuid;
                 self.uuid = data.data.uuid;
                 if(data.data.is_owner){
-                    $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- " + data.data.forked_from.substring(0,5));
+                    $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").show();
                     $("#fork-button").hide();
                 } else {
-                    $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- " + data.data.forked_from.substring(0,5));
+                    $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").hide();
                     $("#fork-button").show();
                 }
@@ -257,7 +257,7 @@ class HackSandBoxEditor {
         this.sketchStopped = true;
         $("#stop-button").addClass("disable");
         $("#control-bar").removeClass("running");
-        $("#control-bar .left-label").html("STOP");
+        $("#control-bar .left-label").html("STANDBY");
     }
 
     switchToErrorState(){
@@ -369,5 +369,60 @@ $(function(){
 
     $('[data-toggle="tooltip"]').tooltip();
     
+    function getBase64(file, callback) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        var callback = callback;
+        reader.onload = function () {
+            callback(reader.result);
+        };
+        reader.onerror = function (error) {
+            callback(false);
+        };
+    }
 
+    var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    }();
+    var $form = $('.box');
+
+    if (isAdvancedUpload) {
+        $form.addClass('has-advanced-upload');
+        $form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('dragover dragenter', function() {
+            $form.addClass('is-dragover');
+        })
+        .on('dragleave dragend drop', function() {
+            $form.removeClass('is-dragover');
+        })
+        .on('drop', function(e) {
+            var droppedFiles = e.originalEvent.dataTransfer.files;
+            console.log(getBase64(droppedFiles[0]));
+            getBase64(droppedFiles[0], function(data){
+                if(data){
+                    $.ajax({
+                        url:"api/images_base64",
+                        type:"POST",
+                        data:{
+                            img_file:data
+                        },
+                        dataType:"json",
+                        success:function(data){
+                            console.log(data);
+                        },
+                        error:function(data){
+                            console.log(data);
+                        }
+                    });
+                } else {
+                    // Error handling
+                }
+            });
+            
+        });
+    }
 });
