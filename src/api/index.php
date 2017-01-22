@@ -104,7 +104,7 @@
     });
 
     $app->get("sketches", function($args, $router, $app){
-        $stmt = $app->db->prepare("SELECT uuid FROM sketches ORDER BY id DESC LIMIT 36");
+        $stmt = $app->db->prepare("SELECT uuid FROM sketches WHERE thumbnail_base64 IS NOT NULL ORDER BY id LIMIT 36");
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($result_uuid);
@@ -117,13 +117,49 @@
                 "uuid"=>$sketch->uuid,
                 "files"=>$sketch->file_list,
                 "forked_from"=>$sketch->forked_from,
-                "title"=>$sketch->title
+                "title"=>$sketch->title,
+                "thumbnail"=>$sketch->thumbnail
             ));
         }
         $app->setRspStat(200)
             ->setRspMsg("ok")
             ->setRspData($result)
             ->respond();
+    });
+
+    $app->post("sketches/%uuid/thumbnail", function($args, $router, $app){
+        $stmt = $app->db->prepare("UPDATE sketches SET thumbnail_base64=? WHERE uuid=?");
+        $thumbnail = $app->router->getRequestBody()["thumbnail"];
+        $uuid = $args["uuid"];
+        $stmt->bind_param("ss", $thumbnail, $uuid);
+        if($stmt->execute()){
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->respond();
+        } else {
+            $app->setRspStat(500)
+                ->setRspMsg("failed to upload image")
+                ->respond();
+        }
+    });
+
+    $app->get("sketches/%uuid/thumbnail", function($args, $router, $app){
+        $stmt = $app->db->prepare("SELECT thumbnail_base64 FROM sketches WHERE uuid=?");
+        $uuid = $args["uuid"];
+        $stmt->bind_param("s", $uuid);
+        if($stmt->execute()){
+            $stmt->store_result();
+            $stmt->bind_result($result_thumbnail);
+            $stmt->fetch();
+            $app->setRspStat(200)
+                ->setRspMsg("ok")
+                ->setRspData($result_thumbnail)
+                ->respond();
+        } else {
+            $app->setRspStat(500)
+                ->setRspMsg("failed to upload image")
+                ->respond();
+        }
     });
 
     $app->post("sketches/%uuid", function($args, $router, $app){

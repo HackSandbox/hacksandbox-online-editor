@@ -81,6 +81,15 @@
             </div>
             <div id="full-screen-loading"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Initializing Hacks ...</div>
         </div>
+        <div id="home-splash">
+
+            <h1>Learn / Play / Hack</h1>
+            <br><br>
+            
+            <div class="showcase-row container">
+                
+            </div>
+        </div>
     </body>
 </html>
 <script type="text/javascript">

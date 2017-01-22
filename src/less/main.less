@@ -64,6 +64,7 @@ body {
         background-color: #161714;
         vertical-align: middle;
         text-align: center;
+        overflow-y:scroll;
         &.expanded {
             width: 100%;
             z-index: 99;
@@ -342,6 +343,7 @@ body {
     position: absolute; 
     right:0; 
     bottom: 0; 
+    overflow: hidden;
     #tut-control-container { 
         width:100%; 
         height:50px; 
@@ -395,7 +397,7 @@ body {
     width:calc(100% + 3px); 
     overflow-y:scroll; 
     font-family: @default-editor-font; 
-    padding-top: 40px; 
+    padding-top: 40px;
 } 
  
 #close-tut { 
@@ -405,4 +407,51 @@ body {
     color:white; 
     font-family: @default-editor-font; 
     cursor: pointer; 
+}
+
+#home-splash {
+    width:100%;
+    height:100%;
+    position: fixed;
+    top:0;
+    left:0;
+    background-color: #212121;
+    z-index: 99;
+    background-image: url(../gameslist.jpg);
+    background-size: cover;
+    overflow-y:scroll;
+    h1 {
+        font-size: 70px;
+        font-family: @default-editor-font;
+        font-weight: 100;
+        text-align: center;
+        color:white;
+        padding-top: 70px;
+    }
+    h2 {
+        font-size: 70px;
+        font-family: @default-editor-font;
+        font-weight: 100;
+        text-align: center;
+        color:white;
+        padding-top: 70px;
+    }
+
+    .showcase-row {
+        width:70%;
+        height:auto;
+        display: block;
+        text-align: center;
+        .showcase-block {
+            width:200px;
+            height:200px;
+            margin:30px;
+            display: inline-block;
+            background-color:white;
+            position: relative;
+            img {
+                max-width: 100%;
+            }
+        }
+    }
 }

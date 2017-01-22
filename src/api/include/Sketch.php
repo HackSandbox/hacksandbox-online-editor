@@ -86,17 +86,18 @@
         }
 
         function fetch($uuid){
-            $stmt = $this->app->db->prepare("SELECT id, uuid, files, forked_from, owner, title FROM sketches WHERE uuid=?");
+            $stmt = $this->app->db->prepare("SELECT id, uuid, files, forked_from, owner, title, thumbnail_base64 FROM sketches WHERE uuid=?");
             $stmt->bind_param("s", $uuid);
             $stmt->execute();
             $stmt->store_result();
             if($stmt->num_rows == 0){
                 return false;
             } else {
-                $stmt->bind_result($result_id, $result_uuid, $result_files, $result_forked_from, $result_owner, $result_title);
+                $stmt->bind_result($result_id, $result_uuid, $result_files, $result_forked_from, $result_owner, $result_title, $result_thumbnail);
                 $stmt->fetch();
                 $this->id = $result_id;
                 $this->uuid = $result_uuid;
+                $this->thumbnail = $result_thumbnail;
                 $this->file_list = json_decode($result_files, true);
                 $this->forked_from = $result_forked_from;
                 $this->owner = $result_owner;

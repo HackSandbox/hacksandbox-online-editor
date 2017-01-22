@@ -246,6 +246,10 @@ class HackSandBoxEditor {
         $("#control-bar").addClass("running");
         $("#control-bar").removeClass("error");
         $("#control-bar .left-label").html("RUNNING");
+        var self = this;
+        setTimeout(function(){
+            self.captureCanvas();
+        },1000);
     }
 
     switchToStopState(){
@@ -285,13 +289,33 @@ class HackSandBoxEditor {
         $("#app-container").animate({'top':0});
         $("#info-drop-down").animate({'top':-200});
     }
+
     closeTut(){ 
-        $("#tutorial-popup").animate({'bottom':-200}); 
+        $("#tutorial-popup").animate({'height':0}); 
     } 
  
     openTut(){ 
-        $("#tutorial-popup").animate({'bottom':0}); 
-    } 
+        $("#tutorial-popup").animate({'height':200}); 
+    }
+
+    captureCanvas(){
+        var canvas = document.getElementById("render-canvas");
+        var img    = canvas.toDataURL("image/png");
+        $.ajax({
+            url:"api/sketches/" + this.uuid + "/thumbnail",
+            type:"POST",
+            data:{
+                "thumbnail":img
+            },
+            dataType:"json",
+            success:function(data){
+                print("thumbnail captured");
+            },
+            error:function(data){
+                console.log(data);
+            }
+        })
+    }
 }
 
 var editor;
@@ -435,7 +459,7 @@ $(function(){
  
     nextTut(); 
      
-     
+
     function switchSketch(){
         editor.switchSketch(window.location.href.split('#')[1], function(result){
             //console.log(window.location.href.split('#')[1]);
@@ -456,6 +480,20 @@ $(function(){
     window.onhashchange = function(){
         switchSketch();
     }
+    $.ajax({
+        url:'api/sketches',
+        type:"GET",
+        dataType:"json",
+        success:function(data){
+            console.log(data);
+            for(var i = 0; i < data.data.length; i++){
+                $(".showcase-row").append("<a href='#" + data.data[i].uuid + "'><div class=\"showcase-block\"><img src='" + data.data[i]['thumbnail'] + "' /></div></a>");
+                $(".showcase-block").click(function(){
+                    $("#home-splash").fadeOut();
+                });  
+            }
+        }
+    });
 
     $('[data-toggle="tooltip"]').tooltip();
     
