@@ -1,14 +1,36 @@
+/**
+ * The base class of all displayable objects. Contains basic spatial properties such as x, y, rotation, scale, etc.
+ * Contains a <draw> method to be called every frame during the drawing process, which can be overridden to produce custom graphics.
+ * Also contains an <update> method to be called every frame. Some helper methods only work correctly when called within this method.
+ * Transformation and styling is pushed and popped automatically before and after the <draw> method call.
+*/
 class DisplayObject 
 {
+	/** Parent Container of this DisplayObject. */
 	Container parent;
+	
+	/** The x coordinate. */
 	float x;
+	
+	/** The y coordinate. */
 	float y;
+	
+	/** The rotation, in radian. */
 	float rotation;
+	
+	/** The x-scale (stretching). */
 	float scaleX;
+	
+	/** The y-scale (stretching). */
 	float scaleY;
+	
+	/** If false, draw method will no longer be called. */
 	boolean visible;
+	
+	/** If true, update method will no longer be called. */
 	boolean paused;
 	
+	/** The global transform matrix. */
 	protected Matrix stageMatrix;
 
 	DisplayObject() {
@@ -24,10 +46,18 @@ class DisplayObject
 		this.stageMatrix = new Matrix(1, 0, 0, 1, 0, 0);
 	}
 	
+	/**
+	 * The draw method to be called each frame. Some drawing operations can only be called within this method.
+	 * Should be overridden.
+	*/
 	void draw() {
 		
 	}
 	
+	/**
+	 * A method used to invoke the update method and related preparations.
+	 * In the Container class, this method also calls the updateAll method of all of its children.
+	*/
 	void drawAll() {
 		if (!this.visible) return;
 		
@@ -41,6 +71,10 @@ class DisplayObject
 		popMatrix();
 	}
 	
+	/**
+	 * Updates the stageMatrix property using its parent property.
+	 * Should not be called by user.
+	*/
 	void updateStageMatrix() {
 		this.stageMatrix.createBox(this.scaleX, this.scaleY, this.rotation, this.x, this.y);
 		if (this.parent != null) {
@@ -48,30 +82,63 @@ class DisplayObject
 		}
 	}
 	
+	/**
+	 * Returns the local x-coordinate given the stage coordinates.
+	 * Only works when called inside update.
+	 * @param stageX stage x-coordinate
+	 * @param stageY stage y-coordinate
+	*/
 	protected float getLocalX(float stageX, float stageY) {
 		return this.stageMatrix.transformInverseX(stageX, stageY);
 	}
 	
+	/**
+	 * Returns the local y-coordinate given the stage coordinates.
+	 * Only works when called inside update.
+	 * @param stageX Stage x-coordinate
+	 * @param stageY Stage y-coordinate
+	*/
 	protected float getLocalY(float stageX, float stageY) {
 		return this.stageMatrix.transformInverseY(stageX, stageY);
 	}
 	
+	/**
+	 * Returns the local x-coordinate of the global mouse coordinates.
+	 * Only works when called inside update.
+	*/
 	protected float getLocalMouseX() {
 		return this.getLocalX(mouseX, mouseY);
 	}
 	
+	/**
+	 * Returns the local y-coordinate of the global mouse coordinates.
+	 * Only works when called inside update.
+	*/
 	protected float getLocalMouseY() {
 		return this.getLocalY(mouseX, mouseY);
 	}
 	
+	/**
+	 * The update method to be called each frame. Some methods can only be called within this method.
+	 * Should be overridden.
+	*/
 	void update() {
 		
 	}
 	
+	/**
+	 * A special update method to be called each frame. 
+	 * Usually used by library classes to update physics information.
+	 * Can be overridden.
+	*/
 	void updatePhysics() {
 		
 	}
 	
+	/**
+	 * A method used to invoke the draw method and related preparations.
+	 * In the Container class, this method also calls the drawAll method of all of its children.
+	*/
 	void updateAll() {
 		if (this.paused) return;
 		
@@ -80,27 +147,41 @@ class DisplayObject
 		this.update();
 	}
 	
+	/**
+	 * Add this DisplayObject as a child of the parent, allowing draw and update methods to be called by the stage.
+	 * @param parent The parent container.
+	*/
 	void addToStage(Container parent) {
 		parent.addChild(this);
 	}
 	
+	/**
+	 * Setup the Processing transform for drawing.
+	 * Should not be called by user.
+	*/
 	void transform() {
 		translate(this.x, this.y);
 		rotate(this.rotation);
 		scale(scaleX, scaleY);
 	}
 	
-	void updateMatrix() {
-		
-	}
-	
+	/**
+	 * Remove this DisplayObject from its parent, thus making it unable to receive any draw or update calls.
+	 * Used to dispose the DisplayObject.
+	*/
 	void removeFromStage() {
 		if (this.parent != null) this.parent.removeChild(this);
 	}
 }
 
+/**
+ * A Container class that can contain children DisplayObjects.
+ * Since this class extends DisplayObject, it can also contain children Containers, making a display list structure.
+ * The draw and update call of a container happens before the calls on the children.
+*/
 class Container extends DisplayObject
 {
+	/** The list of children of this container. */
 	ArrayList<DisplayObject> children;
 
 	Container() {
@@ -142,12 +223,20 @@ class Container extends DisplayObject
 		}
 	}
 	
+	/** 
+	 * Attach a child to this container.
+	 * @param child The child to attach.
+	*/
 	void addChild(DisplayObject child) {
 		if (child.parent != null) child.parent.removeChild(child);
 		this.children.add(child);
 		child.parent = this;
 	}
 	
+	/**
+	 * Remove a child from this container.
+	 * @param child The child to remove.
+	*/
 	void removeChild(DisplayObject child) {
 		this.children.remove(child);
 		child.parent = null;
