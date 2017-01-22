@@ -43,7 +43,11 @@
                 jsCode[jsCode.length] = Processing.compile(javaCode).sourceCode;
                 var canvas = document.getElementById("canvas-" + i);
                 processingInstances[processingInstances.length] = new Processing(canvas, eval(jsCode[jsCode.length - 1]));
-                processingInstances[processingInstances.length - 1].noLoop();
+                var processingInstance = processingInstances[processingInstances.length];
+                setTimeout(function(){
+                    processingInstance.noLoop();
+                },2000);
+                
             }
 
             console.log(jsCode);
