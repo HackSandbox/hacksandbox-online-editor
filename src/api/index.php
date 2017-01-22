@@ -103,6 +103,29 @@
         }
     });
 
+    $app->get("sketches", function($args, $router, $app){
+        $stmt = $app->db->prepare("SELECT uuid FROM sketches ORDER BY id DESC LIMIT 36");
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($result_uuid);
+        $result = array();
+        while($stmt->fetch()){
+            $sketch = new Sketch($app);
+            $sketch->fetch($result_uuid);
+            array_push($result, array(
+                "id"=>$sketch->id,
+                "uuid"=>$sketch->uuid,
+                "files"=>$sketch->file_list,
+                "forked_from"=>$sketch->forked_from,
+                "title"=>$sketch->title
+            ));
+        }
+        $app->setRspStat(200)
+            ->setRspMsg("ok")
+            ->setRspData($result)
+            ->respond();
+    });
+
     $app->post("sketches/%uuid", function($args, $router, $app){
         $sketch = new Sketch($app);
         $sketch->owner = $router->getRequestHeaders()["client-id"];
