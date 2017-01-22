@@ -330,10 +330,11 @@ var tut_content = [
     "An actor object can also be added, given an image, have its position set, added to the container. This actor object is now available for you to modify. This can be done by calling its attributes (here the position variables x and y). When creating an Actor object, it needs certain parameters like (50, 50) which are its size in this case.", 
     "More methods can be created to use the actor with mouse and key presses. The methods are able to check what key or mouse button is pressed and allow you to take appropriate action. The monitoring for input and the key and mouseButton variables are from the standard input library that you can look at in the API from the sandbox, and will likely be the same for all your games.", 
     "The setup method can further be expanded to include obstacle objects for our main actor, being initialized just like the actor. The actor this time is a row of walls to which walls are added to as they are initialized as rectangles.", 
-    "You've now learned the basics of creating your own game here! Look at other people's games' code and create your own in the Sandbox Creator." 
-]; 
+    "You've now learned the basics of creating your own game here! Check the Engine file to look at the source code and learn more." 
+];
+
 var current_tut_page = -1; 
- 
+
 function nextTut(){ 
     if(current_tut_page != tut_content.length - 1){ 
         current_tut_page++; 
