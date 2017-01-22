@@ -152,6 +152,36 @@ class Container extends DisplayObject
 	}
 }
 
+class Stage extends Container
+{
+	
+	Stage() {
+		
+	}
+	
+	void run() {
+		this.updateAll();
+		this.drawAll();
+	}
+	
+	float getScreenWidth() {
+		return width;
+	}
+	
+	float getScreenHeight() {
+		return height;
+	}
+	
+	float getCenterX() {
+		return width / 2.0f;
+	}
+	
+	float getCenterY() {
+		return height / 2.0f;
+	}
+	
+}
+
 class Rectangle extends DisplayObject
 {
 	float width;
@@ -254,7 +284,7 @@ class Text extends DisplayObject
 {
 	
 	String content;
-	float size;
+	float fontSize;
 	int textColor;
 	int textAlpha;
 	int textAlignX;
@@ -263,17 +293,17 @@ class Text extends DisplayObject
 	Text(String content) {
 		this.content = content;
 		
-		size = 14;
-		textColor = color(0);
-		textAlpha = 255;
-		textAlignX = CENTER;
-		textAlignY = CENTER;
+		this.fontSize = 14;
+		this.textColor = color(0);
+		this.textAlpha = 255;
+		this.textAlignX = CENTER;
+		this.textAlignY = CENTER;
 	}
 	
 	void draw() {
 		textAlign(this.textAlignX, this.textAlignY);
 		fill(this.textColor, this.textAlpha);
-		textSize(this.size);
+		textSize(this.fontSize);
 		text(this.content, 0, 0);
 	}
 
@@ -589,6 +619,18 @@ static class Util
 		float dx = (x - centerX);
 		float dy = (y - centerY);
 		return sqrt(dx * dx + dy * dy) < distance;
+	}
+	
+	static float angleToX(float angle, float distance) {
+		return cos(angle) * distance;
+	}
+	
+	static float angleToY(float angle, float distance) {
+		return sin(angle) * distance;
+	}
+	
+	static float getAngle(float x, float y, float targetX, float targetY) {
+		return atan2(targetY - y, targetX - x);
 	}
 }
 
@@ -947,3 +989,4 @@ class Wall{
   void draw(){
   }
 }
+
