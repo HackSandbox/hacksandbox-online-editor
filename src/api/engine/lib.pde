@@ -3,8 +3,6 @@ class DisplayObject
 	Container parent;
 	float x;
 	float y;
-	float w;
-	float h;
 	float rotation;
 	float scaleX;
 	float scaleY;
@@ -17,8 +15,6 @@ class DisplayObject
 		this.parent = null;
 		this.x = 0;
 		this.y = 0;
-		this.w = 0;
-		this.h = 0;
 		this.rotation = 0;
 		this.scaleX = 1;
 		this.scaleY = 1;
@@ -247,9 +243,6 @@ class Rectangle extends DisplayObject
 		
 		this.width = width;
 		this.height = height;
-
-		this.w = width;
-		this.h = height;
 		
 		this.rectColor = color(255);
 		this.rectAlpha = 255;
@@ -279,9 +272,6 @@ class Circle extends DisplayObject
 	Circle (float width, float height) {
 		this.width = width;
 		this.height = height;
-
-		this.w = width;
-		this.h = height;
 		
 		this.circleColor = color(255);
 		this.circleAlpha = 255;
@@ -315,9 +305,6 @@ class Image extends DisplayObject
 		
 		this._width = loadWidth;
 		this._height = loadHeight;
-
-		this.w = loadWidth;
-		this.h = loadHeight;
 	}
 	
 	void draw() {
@@ -671,6 +658,30 @@ static class Util
 		return sqrt(dx * dx + dy * dy) < distance;
 	}
 	
+	boolean circleIntersect(float circle1X, float circle1Y, float circle1Radius, float circle2X, float circle2Y, float circle2Radius) {
+		float dxSQ = (circle2X - circle1X)*(circle2X - circle1X);
+		float dySQ = (circle2Y - circle1Y)*(circle2Y - circle1Y);
+		float rSQ = (circle1Radius + circle2Radius)*(circle1Radius + circle2Radius);
+		float drSQ = (circle1Radius - circle2Radius)*(circle1Radius - circle2Radius);
+		
+		return (dxSQ + dySQ <= rSQ && dxSQ + dySQ >= drSQ);
+	}
+	
+	boolean rectIntersect(float ax0, float ay0, float ax1, float ay1, float bx0, float by0, float bx1, float by1) {
+		float ax1 = ax0 + rect1Width;
+		float ay1 = ay0 + rect1Height;
+		float topA = min(ay0, ay1);
+		float botA = max(ay0, ay1);
+		float leftA = min(ax0, ax1);
+		float rightA = max(ax0, ax1);
+		float topB = min(by0, by1);
+		float botB = max(by0, by1);
+		float leftB = min(bx0, bx1);
+		float rightB = max(bx0, bx1);
+
+		return !(botA <= topB  || botB <= topA || rightA <= leftB || rightB <= leftA);
+	}
+	
 	static float angleToX(float angle, float distance) {
 		return cos(angle) * distance;
 	}
@@ -978,80 +989,5 @@ class Matrix {
 		
 	}
 
-}
-
-
-
-
-// Wall
-class Wall{
-  
-  ArrayList<DisplayObject> _wall = new ArrayList<DisplayObject>();
-  DisplayObject obj;
-  
-  Wall(DisplayObject o){
-    obj = o;
-  }
-  
-  void addwall(DisplayObject wall){
-    _wall.add(wall);
-  }
-  
-  boolean circle_ornot(DisplayObject test){
-    if (test instanceof Circle){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-  
-  boolean circle_circle(float cx0, float cy0, float r0, float cx1, float cy1, float r1){
-    float dxSQ = (cx1 - cx0)*(cx1 - cx0);
-    float dySQ = (cy1 - cy0)*(cy1 - cy0);
-    float rSQ = (r0 + r1)*(r0 + r1);
-    float drSQ = (r0 - r1)*(r0 - r1);
-    return (dxSQ + dySQ <= rSQ && dxSQ + dySQ >= drSQ);
-  }
-  
-  boolean box_box(float ax0, float ay0, float ax1, float ay1, float bx0, float by0, float bx1, float by1){
-  float topA = min(ay0, ay1);
-  float botA = max(ay0, ay1);
-  float leftA = min(ax0, ax1);
-  float rightA = max(ax0, ax1);
-  float topB = min(by0, by1);
-  float botB = max(by0, by1);
-  float leftB = min(bx0, bx1);
-  float rightB = max(bx0, bx1);
-
-  return !(botA <= topB  || botB <= topA || rightA <= leftB || rightB <= leftA);
-}
-  
-  boolean overlap(DisplayObject neighbour){
-        
-      DisplayObject a = (DisplayObject) obj;
-      DisplayObject b = (DisplayObject) neighbour;
-      
-      float ax1 = a.x + a.w;
-      float ay1 = a.y + a.h;
-      float bx1 = b.x + b.w;
-      float by1 = b.y + b.h;
-      return box_box(a.x, a.y, ax1, ay1, b.x, b.y, bx1, by1);
-    
-    
-  }
-  
-  boolean overlaps(){
-    
-    for (int i = 0; i < _wall.size(); i++) {
-     if(overlap(_wall.get(i))){
-       return true;
-     }
-    }
-    return false;
-  }
-  
-  void draw(){
-  }
 }
 
