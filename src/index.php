@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>HackSandbox Editor</title>
         <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-        <link href="less/main.less?v=0003" type="text/less" rel="stylesheet" />
+        <link href="less/main.less?v=0004" type="text/less" rel="stylesheet" />
         <link href="https://ssl.jackzh.com/file/css/font-awesome-4.4.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
         <script src="js/jquery-3.1.1.min.js"></script>
         <script src="js/processing.min.js"></script>
@@ -12,7 +12,7 @@
         <script src="https://ssl.jackzh.com/file/js/ace/ace-builds-1.2.2/src-min/ace.js"></script>
         <script src="https://ssl.jackzh.com/file/js/less-js/less.min.js"></script>
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src="js/editor.js?v=0002" type="text/babel"></script>
+        <script src="js/editor.js?v=0003" type="text/babel"></script>
     </head>
     <body>
         <div id="info-drop-down">
