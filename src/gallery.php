@@ -14,11 +14,12 @@
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     </head>
 
-    <body>
+    <body style="overflow-y:scroll;">
+        <br><br>
         <?php for ($i = 0; $i < 6; $i++){ ?>
             <div class="row">
             <?php for ($k = 0; $k < 6; $k++){ ?>
-                <div id="showcase-<?php echo ($i*4) + ($k); ?>" class="col-md-2" style="position:relative;">
+                <div class="showcase-container" id="showcase-<?php echo ($i*4) + ($k); ?>" class="col-md-2" style="position:relative;">
                     <canvas class="showcase-canvas" id="canvas-<?php echo ($i*6) + ($k); ?>" style="width:100%; height:100%; max-height:100%; max-width:100%; margin:20px;"><canvas>
                 </div>
             <?php } ?>
