@@ -138,7 +138,7 @@ class HackSandBoxEditor {
                 if(data.data.is_owner){
                     $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").show();
-                    $("#fork-button").hide();
+                    //$("#fork-button").hide();
                     $(".right-container").removeClass("expanded");
                 } else {
                     $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
@@ -336,6 +336,21 @@ $(function(){
     });
 
     $("#fork-button").click(function(){
+        $("#full-screen-loading").fadeIn();
+        editor.forkSketch(function(result){
+            if(result){
+                editor.switchSketch(result.data.uuid, function(data){
+                    $("#full-screen-loading").fadeOut();
+                });
+            } else {
+                print("Failed to fork sketch");
+                $("#full-screen-loading").fadeOut();
+            }
+        });
+    });
+
+
+    $("#hack-your-own-copy").click(function(){
         $("#full-screen-loading").fadeIn();
         editor.forkSketch(function(result){
             if(result){
