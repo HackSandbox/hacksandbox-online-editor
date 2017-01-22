@@ -322,7 +322,10 @@ $(function(){
     });
 
     $("#add-tab-button").click(function(){
-        editor.addTab(prompt("Enter a name: "));
+        var result = prompt("Enter a name: ");
+        if(result){
+            editor.addTab(result);
+        }
     });
 
     $("#save-button").click(function(){
