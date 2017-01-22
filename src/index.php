@@ -85,7 +85,7 @@
 
             <h1>Learn / Play / Hack</h1>
             <br><br>
-            <a href="#base"><button id="create-your-own">Create Your Own Game</button></a>
+            <a href="#base"><button id="create-your-own"><span class="glyphicon glyphicon-plus"></span> Create Your Own</button></a>
             <div class="showcase-row container">
                 
             </div>
