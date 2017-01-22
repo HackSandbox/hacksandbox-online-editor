@@ -104,7 +104,7 @@
     });
 
     $app->get("sketches", function($args, $router, $app){
-        $stmt = $app->db->prepare("SELECT uuid FROM sketches WHERE thumbnail_base64 IS NOT NULL and title LIKE 'pub%' ORDER BY id LIMIT 36");
+        $stmt = $app->db->prepare("SELECT uuid FROM sketches WHERE thumbnail_base64 IS NOT NULL and title LIKE 'pub%' ORDER BY id DESC LIMIT 36");
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($result_uuid);
