@@ -285,9 +285,44 @@ class HackSandBoxEditor {
         $("#app-container").animate({'top':0});
         $("#info-drop-down").animate({'top':-200});
     }
+    closeTut(){ 
+        $("#tutorial-popup").animate({'bottom':-200}); 
+    } 
+ 
+    openTut(){ 
+        $("#tutorial-popup").animate({'bottom':0}); 
+    } 
 }
 
 var editor;
+
+var tut_content = [ 
+    "Click the Next Step button to start learning and continue once you understand the code in the editor after pressing the button.", 
+    "The setup function creates a window for you to use, calling the size function edits the size of the window, and creating a Container object makes a container for in-game items.", 
+    "The 'void setup()' is the method signature. The 'void' means that the method does not return any value when called, the 'setup' is the name, and '()' means the method has no parameters.", 
+    "A function is called by writing its name, like 'size', and then giving arguments to its parameters in brackets.  An object is made by writing a name for it, the 'mainContainer' and then '= new Container' with the 'Container' being the type of the Container object.", 
+    "The draw function is responsible for adding a background to the container. It sets a background colour, updates all of the objects in the container, and draws all of the objects in the container.", 
+    "Everything created outside the bounds of a function becomes Global. This means that this object can be used in any function in the file, like the created backgroundImage. In the setup function, now the backgroundImage is given a value and added to the main container.", 
+    "An actor object can also be added, given an image, have its position set, added to the container. This actor object is now available for you to modify. This can be done by calling its attributes (here the position variables x and y). When creating an Actor object, it needs certain parameters like (50, 50) which are its size in this case.", 
+    "More methods can be created to use the actor with mouse and key presses. The methods are able to check what key or mouse button is pressed and allow you to take appropriate action. The monitoring for input and the key and mouseButton variables are from the standard input library that you can look at in the API from the sandbox, and will likely be the same for all your games.", 
+    "The setup method can further be expanded to include obstacle objects for our main actor, being initialized just like the actor. The actor this time is a row of walls to which walls are added to as they are initialized as rectangles.", 
+    "You've now learned the basics of creating your own game here! Look at other people's games' code and create your own in the Sandbox Creator." 
+]; 
+var current_tut_page = -1; 
+ 
+function nextTut(){ 
+    if(current_tut_page != tut_content.length - 1){ 
+        current_tut_page++; 
+        $("#tut-content-container").html(tut_content[current_tut_page]); 
+    } 
+} 
+ 
+function prevTut(){ 
+    if(current_tut_page > 0){ 
+        current_tut_page--; 
+        $("#tut-content-container").html(tut_content[current_tut_page]); 
+    } 
+}
 
 $(function(){
     editor = new HackSandBoxEditor();
@@ -386,6 +421,21 @@ $(function(){
         window.location.hash = "new";
     });
     
+    $("#prev-tut-button").click(function(){ 
+        prevTut(); 
+    }); 
+ 
+    $("#next-tut-button").click(function(){ 
+        nextTut(); 
+    }); 
+ 
+    $("#close-tut").click(function(){ 
+        editor.closeTut(); 
+    }); 
+ 
+    nextTut(); 
+     
+     
     function switchSketch(){
         editor.switchSketch(window.location.href.split('#')[1], function(result){
             //console.log(window.location.href.split('#')[1]);

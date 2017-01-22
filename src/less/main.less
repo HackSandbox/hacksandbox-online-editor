@@ -35,7 +35,6 @@ body {
     top:0;
     left:0;
     overflow: hidden;
-    overflow-y: scroll;
     .left-container {
         width:50%;
         height:100%;
@@ -48,6 +47,11 @@ body {
             width:100%;
             font-size: 16px;
             line-height: 30px;
+            font-size: 14px; 
+            line-height: 20px; 
+            ::-webkit-scrollbar {  
+                display: none;  
+            } 
         }
     }
 
@@ -70,9 +74,6 @@ body {
         }
     }
 
-    #render-canvas {
-        margin-top:20px;
-    }
 }
 
 .alert-window {
@@ -137,6 +138,7 @@ body {
     background-color: #161714;
     overflow: hidden;
     position: relative;
+    font-family: @default-editor-font; 
     &.running {
         background-color:#2E7D32;
         transition:all ease 0.3s;
@@ -331,4 +333,76 @@ body {
 
 .showcase-container {
     vertical-align: middle;
+}
+
+#tutorial-popup { 
+    width:100%; 
+    height:200px; 
+    background-color:black; 
+    position: absolute; 
+    right:0; 
+    bottom: 0; 
+    #tut-control-container { 
+        width:100%; 
+        height:50px; 
+        background-color:rgba(255,255,255,0.1); 
+        position: absolute; 
+        bottom: 0; 
+        right:0; 
+        font-family: @default-editor-font; 
+        .left { 
+            width:50%; 
+            height:100%; 
+            position: absolute; 
+            top:0; 
+            left:0; 
+            line-height:50px; 
+            color:white; 
+            opacity:0.5; 
+            text-align: center; 
+            transition:all ease 0.3s; 
+            cursor:pointer; 
+            &:hover { 
+                opacity:1; 
+                transition:all ease 0.3s; 
+            } 
+        } 
+        .right { 
+            position: absolute; 
+            width:50%; 
+            height:100%; 
+            top:0; 
+            right:0; 
+            line-height:50px; 
+            color:white; 
+            opacity:0.5; 
+            text-align: center; 
+            transition:all ease 0.3s; 
+            cursor:pointer; 
+            &:hover { 
+                opacity:1; 
+                transition:all ease 0.3s; 
+            } 
+        } 
+    } 
+} 
+ 
+#tut-content-container { 
+    color:white; 
+    height:150px; 
+    padding: 20px; 
+    text-align: left; 
+    width:calc(100% + 3px); 
+    overflow-y:scroll; 
+    font-family: @default-editor-font; 
+    padding-top: 40px; 
+} 
+ 
+#close-tut { 
+    position: absolute; 
+    right:10px; 
+    top:10px; 
+    color:white; 
+    font-family: @default-editor-font; 
+    cursor: pointer; 
 }
