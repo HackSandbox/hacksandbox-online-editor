@@ -3,7 +3,7 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     //phpinfo();
-    require_once "include/system_check/base64.php";
+    //require_once "include/system_check/base64.php";
     require_once "include/App.php";
     require_once "include/Router.php";
     require_once "include/User.php";
@@ -46,52 +46,6 @@
         mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
       );
     }
-
-    function base64_to_image($base64_string, $output_file) {
-      if(true){ //base64_get_extension($base64_string)
-        $ifp = fopen($output_file, "wb");
-        $data = explode(',', $base64_string);
-        fwrite($ifp, base64_decode($data[1]));
-        fclose($ifp);
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    // Upload image using base64 string
-    $app->post("images_base64",function($args, $router, $app){
-      $targetDir = "images/";
-      $targetFile = gen_uuid();
-      $body = $app->router->getRequestBody();
-      //print_r($body);
-      if(base64_to_image($body["img_file"], $targetDir . $targetFile)){
-        $app->setResponseStatus(ResponseStatus::$ok);
-        $app->setResponseMessage("Image uploaded");
-        $app->setResponseData(array(
-          "name"=>$targetFile
-        ));
-        $app->respond();
-      } else {
-        $app->setResponseStatus(401);
-        $app->setResponseMessage("file not allowed");
-        $app->respond();
-      }
-    });
-
-    // Get a image file
-    $app->get("images/%imagename",function($args, $router, $app){
-      $file = 'images/' . $args["imagename"];
-      if(file_exists($file)){
-        header('Content-Type:'. mime_content_type($file));
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
-      } else {
-        $app->setResponseStatus(ResponseStatus::$notFound);
-        $app->setResponseMessage("We are unable to find the image your are looking for.");
-        $app->respond();
-      }
-    });
 
     $app->post("users", function($args, $router, $app){
         $user = new User($app);

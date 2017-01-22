@@ -139,10 +139,14 @@ class HackSandBoxEditor {
                     $(".right-label").html("you are the owner of " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").show();
                     $("#fork-button").hide();
+                    $(".right-container").removeClass("expanded");
                 } else {
                     $(".right-label").html("you are viewing <span class='glyphicon glyphicon-lock'></span> " + data.data.uuid.substring(0,5) + " <- <a href='#" + data.data.forked_from + "'>" + data.data.forked_from.substring(0,5) + "</a>");
                     $("#save-button").hide();
                     $("#fork-button").show();
+                    self.compile();
+                    self.switchToRunningState();
+                    $(".right-container").addClass("expanded");
                 }
                 callback(data);
             },

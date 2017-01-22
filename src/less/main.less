@@ -37,6 +37,13 @@ body {
         background-color: #161714;
         vertical-align: middle;
         text-align: center;
+        &.expanded {
+            width: 100%;
+            z-index: 99;
+            #hack-your-own-copy {
+                display: inline-block;
+            }
+        }
     }
 
     #render-canvas {
@@ -264,5 +271,23 @@ body {
         text-align: center;
         color:rgba(255,255,255,0.3);
         font-size: 60px;
+    }
+}
+
+#hack-your-own-copy {
+    padding: 20px;
+    background-color: #1B5E20;
+    color:white;
+    font-family: @default-editor-font;
+    border:none;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-size:30px;
+    opacity:0.8;
+    transition:all ease 0.3s;
+    display: none;
+    &:hover {
+        opacity:1;
+        transition:all ease 0.3s;
     }
 }
