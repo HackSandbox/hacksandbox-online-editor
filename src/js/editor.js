@@ -323,17 +323,17 @@ class HackSandBoxEditor {
 var editor;
 
 var tut_content = [ 
-    "Click the Next Step button to start learning and continue once you understand the code in the editor after pressing the button.", 
-    "The setup function creates a window for you to use, calling the size function edits the size of the window, and creating a Container object makes a container for in-game items.", 
+    "Click the Next Step button to start learning. The editor on the left has some starter code to undertand and build upon. Anytime you come across an object or function you don't recongnize, look under the Engine tab above the editor to check the source code and look at how it works.", 
+    "The setup function creates a window for you to use, calling the size function inside the setup function edits the size of the window, and creating a Container object makes a container for in-game items. Edit your setup function so that it has all of these capabilities and set the size to (500, 500).", 
     "The 'void setup()' is the method signature. The 'void' means that the method does not return any value when called, the 'setup' is the name, and '()' means the method has no parameters.", 
     "A function is called by writing its name, like 'size', and then giving arguments to its parameters in brackets.  An object is made by writing a name for it, the 'mainContainer' and then '= new Container' with the 'Container' being the type of the Container object.", 
-    "The draw function is responsible for adding a background to the container. It sets a background colour, updates all of the objects in the container, and draws all of the objects in the container.", 
-    "Everything created outside the bounds of a function becomes Global. This means that this object can be used in any function in the file, like the created backgroundImage. In the setup function, now the backgroundImage is given a value and added to the main container.", 
-    "An actor object can also be added, given an image, have its position set, added to the container. This actor object is now available for you to modify. This can be done by calling its attributes (here the position variables x and y). When creating an Actor object, it needs certain parameters like (50, 50) which are its size in this case.", 
-    "More methods can be created to use the actor with mouse and key presses. The methods are able to check what key or mouse button is pressed and allow you to take appropriate action. The monitoring for input and the key and mouseButton variables are from the standard input library that you can look at in the API from the sandbox, and will likely be the same for all your games.", 
+    "The draw function is responsible for adding a background to the container. It sets a background colour, updates all of the objects in the container, and draws all of the objects in the container. Make the draw function so that it has all these functionalities (by calling the drawAll() and updateAll() functions). Feel free to look at other games already made to see how it's done.", 
+    "Everything created outside the bounds of a function becomes Global. This means that this object can be used in any function in the class/file, like the created backgroundImage. In the setup function, now the backgroundImage is given a value and added to the main container.", 
+    "An actor object can also be added, given an image, have its position set, added to the container. This actor object is now available for you to modify. This can be done by calling its attributes (like the position variables x and y). When creating an Actor object, it needs certain parameters which are its size in this case.", 
+    "More methods can be created to use the actor with mouse and key presses. The methods are able to check what key or mouse button is pressed and allow you to take appropriate action. The monitoring for input and these variables are from the standard input library that you can look at in the source, and will likely be the same for all your games.", 
     "The setup method can further be expanded to include obstacle objects for our main actor, being initialized just like the actor. The actor this time is a row of walls to which walls are added to as they are initialized as rectangles.", 
-    "You've now learned the basics of creating your own game here! Check the Engine file to look at the source code and learn more." 
-];
+    "You've now learned the basics of creating your own game with actors, movement, and a setting! For more features that don't map to a generic game, like collision, there are premade games provided. You can look at them, play them, then make your own copy using the button at the bottom to modify them. You can also check the Engine file to look at the source code and learn more about the API." 
+]
 
 var current_tut_page = -1; 
 
