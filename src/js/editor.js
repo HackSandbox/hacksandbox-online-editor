@@ -169,7 +169,7 @@ class HackSandBoxEditor {
             success:function(data){
                 console.log(data);
                 $("#save-button").show();
-                $("#fork-button").hide();
+                //$("#fork-button").hide();
                 self.deleteAllFiles();
                 for (var key in data.data.files){
                     self.addTab(key);
