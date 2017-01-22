@@ -456,6 +456,10 @@ $(function(){
     $("#close-tut").click(function(){ 
         editor.closeTut(); 
     }); 
+
+    $("#create-your-own").click(function(){
+        $("#home-splash").fadeOut();
+    })
  
     nextTut(); 
      

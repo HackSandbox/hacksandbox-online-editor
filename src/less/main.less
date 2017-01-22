@@ -322,6 +322,23 @@ body {
     }
 }
 
+#create-your-own {
+    padding: 20px;
+    background-color: rgba(0,0,0,0.5);
+    color:white;
+    font-family: @default-editor-font;
+    border:none;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-size:30px;
+    opacity:0.8;
+    transition:all ease 0.3s;
+    &:hover {
+        opacity:1;
+        transition:all ease 0.3s;
+    }
+}
+
 .showcase-canvas {
     transform: scale(1);
     transition: all ease 0.3s;
@@ -420,6 +437,7 @@ body {
     background-image: url(../gameslist.jpg);
     background-size: cover;
     overflow-y:scroll;
+    text-align: center;
     h1 {
         font-size: 70px;
         font-family: @default-editor-font;
