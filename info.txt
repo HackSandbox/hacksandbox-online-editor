@@ -1,0 +1,36 @@
+=== Idea & Objective ===
+
+Traditional programming learning environments focus either extremely on fun and lack the connection to practical skills or focus heavily on syntax and programming concepts but lack a fun teaching environment to keep the users motivated. 
+Our hacksandbox.com takes another approach: learning by example. Being able to simply view, modify existing games and make your own version is very satisfying, and provides motivation for people who potentially have a passion for programming.
+This platform is suitable for varying skill levels, and we aimed to accomplish this in a way that the user found fun and entertaining so they would be more likely to keep learning, creating, and sharing. 
+
+
+=== Features ===
+
+- Hacking:
+	. Browse, play and get inspiration from works created by others
+	. Hack or create your own copy of sketch / game without the need of an account
+	. Instantly publish your hack and share with a permanent-link
+
+- API:
+	. Intuitive custom-made object-oriented API for rapid prototyping of interactive sketches.
+	. Written on top of the powerful Java library Processing, allowing most Processing drawing operations to be seamlessly integrated into the new structure.
+	. All source code provide to allow customization and easy learning.
+
+
+=== Beyond The Hack ===
+
+- Play:
+	allow optional account creation to bookmark favorites, customize interface, allow editing of owned sketches, and much more.
+	enables better search and categorization of sketches, and suggestion of similar works.
+	supports downloading of sketches as .zip files.
+	
+- Hack:
+	improve the API to support common interactive tasks such as physics simulation, pixel-perfect collision detection, scene management, event system, and allow uploading of images, fonts, audio, and other assets.
+	enables rating and commenting of sketches and forks.
+	expand the number of supported frameworks and languages, such as pixi.js, p5.js, and WebGL.
+
+- Learn:
+	provide extensive collection of examples to help with the learn-by-example philosophy.
+	provide comprehensive documentation of the API.
+	provide an intuitive tutorial system to allow fast-searching of concepts and keywords directly from within the editor.
